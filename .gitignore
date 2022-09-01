@@ -1,0 +1,5 @@
+.vscode/
+app_log.html
+app_report.html
+app_test.xml
+.DS_Store

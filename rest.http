@@ -1,0 +1,82 @@
+## Authentication
+
+POST login.microsoftonline.com/{{tenant_id}}/oauth2/v2.0/token HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+client_id={{client_id}}
+&scope=https://management.azure.com/.default
+&client_secret={{client_secret}}
+&grant_type=client_credentials
+
+
+###  List Incidents
+
+GET https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents?api-version=2022-08-01
+Authorization: Bearer {{token}}
+
+### Get individual incident
+GET https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents/1662017910?api-version=2021-04-01
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Create Incident
+PUT https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents/{{$timestamp}}?api-version=2021-10-01
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "properties": {
+        "severity": "Informational",
+        "status": "New",
+        "title": "My incident from SOAR"
+    }
+}
+
+### Update Incident Status - need to get first and then push
+PUT https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents/1661855486?api-version=2021-10-01
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "properties": {
+        "severity": "Informational",
+        "status": "Active",
+        "title": "new title"
+    }
+}
+
+### Get comments for incident
+GET https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents/1661855486/comments?api-version=2021-04-01
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Get individual incident with last updated time
+GET https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents?api-version=2021-04-01&$filter=(properties/lastModifiedTimeUtc eq 2022-08-30T10:26:27.3710349Z)
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
+### Paginated
+GET https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents?api-version=2021-04-01&$top=1
+Authorization: Bearer {{token}}
+
+
+### Update owner
+PUT https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents/1662017910?api-version=2021-10-01
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "properties": {
+        "title": "new title",
+        "severity": "Informational",
+        "status": "Active",
+        "owner": {
+            "userPrincipalName": "dfederschmidt@splunk.com"
+        }
+    }
+}
+
+###
+POST https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents/1662017910/entities?api-version=2021-10-01
+Authorization: Bearer {{token}}

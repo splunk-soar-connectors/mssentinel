@@ -1,0 +1,87 @@
+{
+    "actions": [
+        {
+            "action": "on poll",
+            "description": "Callback action for the on_poll ingest functionality",
+            "type": "ingest",
+            "identifier": "on_poll",
+            "read_only": true,
+            "parameters": {
+                "container_count": {
+                    "data_type": "numeric",
+                    "description": "Number of events to generate",
+                    "required": false,
+                    "value": null
+                },
+                "artifact_count": {
+                    "data_type": "numeric",
+                    "description": "Number of artifacts to generate per event",
+                    "required": false,
+                    "value": null
+                }
+            },
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get incident entities",
+            "identifier": "get_incident_entities",
+            "description": "Gets all entities for an incident",
+            "type": "generic",
+            "parameters": {},
+            "read_only": true,
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "create incident",
+            "identifier": "create_incident",
+            "description": "Creates a new incident.",
+            "output": [],
+            "parameters": {},
+            "type": "generic",
+            "read_only": true,
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "create incident comment",
+            "identifier": "create_incident_comment",
+            "description": "Creates a new incident comment.",
+            "output": [],
+            "parameters": {},
+            "type": "generic",
+            "read_only": true,
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get incident comments",
+            "identifier": "get_incident_comments",
+            "description": "Gets all comments for an incident.",
+            "output": [],
+            "parameters": {},
+            "type": "generic",
+            "read_only": true,
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get incident relations",
+            "identifier": "get_incident_relations",
+            "description": "Gets all relations for a given incident.",
+            "output": [],
+            "parameters": {},
+            "type": "generic",
+            "read_only": true,
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "add incident label",
+            "identifier": "add_incident_label",
+            "description": "Adds a label to a given incident.",
+            "output": [],
+            "parameters": {},
+            "type": "generic",
+            "read_only": true,
+            "versions": "EQ(*)"
+        }
+    ]
+}
