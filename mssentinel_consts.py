@@ -8,6 +8,7 @@ SENTINEL_API_VERSION = "2022-08-01"
 SENTINEL_API_INCIDENTS = "/incidents"
 SENTINEL_API_INCIDENTS_PAGE_SIZE = 50
 
+
 # State management
 STATE_TOKEN_KEY = "sentinel_token"
 STATE_LAST_TIME = "last_time"
@@ -36,6 +37,7 @@ LOG_FAILED_UPDATE_INCIDENT = "Failed to update incident"
 LOG_FAILED_RETRIEVING_INCIDENT_ALERTS = "Failed to retrieve incident alerts"
 LOG_FAILED_RETRIEVING_INCIDENT_ENTITIES = "Failed to retrieve incident entities"
 LOG_CONNECTING_TO = "Connecting to {to}"
+LOG_FAILED_CREATING_INCIDENT_COMMENT = "Failed to create incident comment"
 
 LOG_UTC_SINCE_TIME_ERROR = "Please provide time in the span of UTC time since Unix epoch 1970-01-01T00:00:00Z."
 LOG_GREATER_EQUAL_TIME_ERR = 'Invalid {0}, can not be greater than or equal to current UTC time'

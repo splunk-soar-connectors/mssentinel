@@ -78,6 +78,29 @@
             "versions": "EQ(*)"
         },
         {
+            "action": "on poll",
+            "description": "Callback action for the on_poll ingest functionality",
+            "type": "ingest",
+            "identifier": "on_poll",
+            "read_only": true,
+            "parameters": {
+                "container_count": {
+                    "data_type": "numeric",
+                    "description": "Number of events to generate",
+                    "required": false,
+                    "value": null
+                },
+                "artifact_count": {
+                    "data_type": "numeric",
+                    "description": "Number of artifacts to generate per event",
+                    "required": false,
+                    "value": null
+                }
+            },
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
             "action": "get incident",
             "identifier": "get_incident",
             "description": "Gets a given incident.",
@@ -93,6 +116,10 @@
                 }
             },
             "output": [
+                {
+                    "data_path": "action-result.parameter.incident_name",
+                    "data_type": "string"
+                },
                 {
                     "data_path": "action_result.data.*.id",
                     "data_type": "string"
@@ -187,12 +214,16 @@
                 {
                     "data_path": "action_result.summary.incident_id",
                     "data_type": "string",
-                    "contains": ["mssentinel incident id"]
+                    "contains": [
+                        "mssentinel incident id"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.incident_name",
                     "data_type": "string",
-                    "contains": ["mssentinel incident name"]
+                    "contains": [
+                        "mssentinel incident name"
+                    ]
                 }
             ],
             "versions": "EQ(*)",
@@ -200,7 +231,7 @@
                 "width": 12,
                 "title": "Get Incident",
                 "type": "table",
-                "height": 5    
+                "height": 5
             }
         },
         {
@@ -215,12 +246,46 @@
                     "primary": true,
                     "required": true,
                     "order": 0,
-                    "contains": ["mssentinel incident name"]
+                    "contains": [
+                        "mssentinel incident name"
+                    ]
                 }
             },
             "read_only": true,
-            "output": [],
-            "versions": "EQ(*)"
+            "output": [
+                {
+                    "data_path": "action_result.parameter.incident_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.summary.total_entities",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.entities.*.id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.entities.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.entities.*.kind",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.entities.*.kind",
+                    "data_type": "string"
+                }
+            ],
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Get Incident Entities",
+                "type": "custom",
+                "view": "mssentinel_view.get_incident_entities",
+                "height": 5
+            }
         },
         {
             "action": "get incident alerts",
@@ -234,11 +299,17 @@
                     "primary": true,
                     "required": true,
                     "order": 0,
-                    "contains": ["mssentinel incident name"]
+                    "contains": [
+                        "mssentinel incident name"
+                    ]
                 }
-            }, 
+            },
             "read_only": true,
             "output": [
+                {
+                    "data_path": "action_result.parameter.incident_name",
+                    "data_type": "string"
+                },
                 {
                     "data_path": "action_result.summary.total_alerts",
                     "data_type": "numeric"
@@ -246,7 +317,9 @@
                 {
                     "data_path": "action_result.data.*.id",
                     "data_type": "string",
-                    "contains": ["mssentinel alert id"]
+                    "contains": [
+                        "mssentinel alert id"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.name",
@@ -305,7 +378,14 @@
                     "data_type": "string"
                 }
             ],
-            "versions": "EQ(*)"
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Get Incident Alerts",
+                "type": "custom",
+                "view": "mssentinel_view.get_incident_alerts",
+                "height": 5
+            }
         },
         {
             "action": "list incidents",
@@ -328,6 +408,14 @@
             "read_only": true,
             "versions": "EQ(*)",
             "output": [
+                {
+                    "data_path": "action_result.parameter.limit",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.parameter.filter",
+                    "data_type": "string"
+                },
                 {
                     "data_path": "action_result.data.*.id",
                     "data_type": "string"
@@ -421,7 +509,7 @@
                 "title": "List Incidents",
                 "type": "custom",
                 "view": "mssentinel_view.list_incidents",
-                "height": 5    
+                "height": 5
             }
         },
         {
@@ -438,20 +526,29 @@
                 },
                 "ph": {
                     "data_type": "ph",
-                    "order": 1 
+                    "order": 1
                 },
                 "severity": {
                     "description": "Updated severity of the incident",
                     "required": false,
                     "data_type": "string",
-                    "value_list": ["High", "Medium", "Low", "Informational"],
+                    "value_list": [
+                        "High",
+                        "Medium",
+                        "Low",
+                        "Informational"
+                    ],
                     "order": 2
                 },
                 "status": {
                     "description": "Updated status of the incident",
                     "required": false,
                     "data_type": "string",
-                    "value_list": ["New", "Active", "Closed"],
+                    "value_list": [
+                        "New",
+                        "Active",
+                        "Closed"
+                    ],
                     "order": 3
                 },
                 "title": {
@@ -480,7 +577,12 @@
                     "description": "The reason the incident was closed. Only updated when status is updated to Closed.",
                     "data_type": "string",
                     "required": false,
-                    "value_list": ["BenignPositive", "FalsePositive", "TruePositive", "Undetermined"],
+                    "value_list": [
+                        "BenignPositive",
+                        "FalsePositive",
+                        "TruePositive",
+                        "Undetermined"
+                    ],
                     "order": 8
                 },
                 "classification_comment": {
@@ -493,12 +595,52 @@
                     "description": "The classification reason the incident was closed with. Only updated when status is updated to Closed.",
                     "data_type": "string",
                     "required": false,
-                    "value_list": ["InaccurateData", "IncorrectAlertLogic","SuspiciousActivity","SuspiciousButExpected"],
+                    "value_list": [
+                        "InaccurateData",
+                        "IncorrectAlertLogic",
+                        "SuspiciousActivity",
+                        "SuspiciousButExpected"
+                    ],
                     "order": 10
                 }
-
             },
             "output": [
+                {
+                    "data_path": "action_result.parameter.incident_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.severity",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.title",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.owner_upn",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.classification",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.classification_reason",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.classification_comment",
+                    "data_type": "string"
+                },
                 {
                     "data_path": "action_result.data.*.id",
                     "data_type": "string"
@@ -510,13 +652,17 @@
                 {
                     "data_path": "action_result.data.*.name",
                     "data_type": "string",
+                    "column_name": "Name",
+                    "column_order": 0,
                     "contains": [
                         "mssentinel incident name"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.type",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "column_order": 1,
+                    "column_name": "Type"
                 },
                 {
                     "data_path": "action_result.data.*.properties.owner.email",
@@ -585,20 +731,90 @@
                 {
                     "data_path": "action_result.summary.incident_id",
                     "data_type": "string",
-                    "contains": ["mssentinel incident id"]
+                    "contains": [
+                        "mssentinel incident id"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.incident_name",
                     "data_type": "string",
-                    "contains": ["mssentinel incident name"]
+                    "contains": [
+                        "mssentinel incident name"
+                    ]
                 }
             ],
             "render": {
                 "width": 12,
                 "title": "Update Incident",
                 "type": "table",
-                "height": 5    
+                "height": 5
             },
+            "type": "generic",
+            "read_only": true,
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "add incident comment",
+            "identifier": "add_incident_comment",
+            "description": "Creates a new incident comment.",
+            "parameters": {
+                "incident_name": {
+                    "description": "Incident Name",
+                    "data_type": "string",
+                    "primary": true,
+                    "required": true,
+                    "order": 0
+                },
+                "message": {
+                    "description": "The comment message",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.properties.author.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.properties.author.objectId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.properties.author.email",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.properties.author.userPrincipalName",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.properties.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.properties.createdTimeUtc",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.properties.lastModifiedTimeUtc",
+                    "data_type": "string"
+                }
+            ],
             "type": "generic",
             "read_only": true,
             "versions": "EQ(*)"

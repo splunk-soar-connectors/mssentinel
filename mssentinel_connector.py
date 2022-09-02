@@ -330,6 +330,9 @@ class SentinelConnector(BaseConnector):
         last_modified_time = (datetime.now() - timedelta(days=7)).strftime(SENTINEL_APP_DT_STR_FORMAT) # Let's fall back to the last 7 days
         incidents = []
 
+        if not self._state.get(STATE_TOKEN_KEY):
+            self._generate_new_access_token(action_result)
+
 
         if start_time_scheduled_poll:
             ret_val = self._check_date_format(action_result, start_time_scheduled_poll)
@@ -520,6 +523,33 @@ class SentinelConnector(BaseConnector):
         summary["incident_name"] = updated_incident["name"]
 
         return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_add_incident_comment(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        self.save_progress("In action handler for: {}".format(self.get_action_identifier()))
+
+        incident_name = param["incident_name"]
+        message = param["message"]
+
+        comment_id = int(datetime.utcnow().timestamp())
+
+        endpoint = f"{self._api_url}{SENTINEL_API_INCIDENTS}/{incident_name}/comments/{comment_id}"
+
+        payload = {
+            "properties": {
+                "message": message
+            }
+        }
+
+        ret_val, response = self._make_sentinel_call(endpoint, action_result, method="put", json=payload)
+
+        if phantom.is_fail(ret_val):
+            self.save_progress(LOG_FAILED_CREATING_INCIDENT_COMMENT)
+            return action_result.get_status()
+
+        action_result.add_data(response)
+
+        return action_result.set_status(phantom.APP_SUCCESS)
  
 
     def handle_action(self, param):
@@ -542,6 +572,8 @@ class SentinelConnector(BaseConnector):
             ret_val = self._handle_get_incident_alerts(param)
         elif action_id == "get_incident_entities":
             ret_val = self._handle_get_incident_entities(param)
+        elif action_id == "add_incident_comment":
+            ret_val = self._handle_add_incident_comment(param)
         elif action_id == "on_poll":
             ret_val = self._handle_on_poll(param)
 
