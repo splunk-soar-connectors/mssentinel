@@ -4,8 +4,8 @@
     "description": "This app provides integration with Microsoft Sentinel",
     "type": "information",
     "product_vendor": "Microsoft",
-    "logo": "mssentinel.png",
-    "logo_dark": "mssentinel_dark.png",
+    "logo": "logo_mssentinel.svg",
+    "logo_dark": "logo_mssentinel_dark.svg",
     "product_name": "Sentinel",
     "python_version": "3",
     "product_version_regex": ".*",
@@ -15,7 +15,7 @@
     "utctime_updated": "2022-04-30T14:52:08.552463Z",
     "package_name": "phantom_mssentinel",
     "main_module": "mssentinel_connector.py",
-    "min_phantom_version": "5.3.2.88192",
+    "min_phantom_version": "5.2.1.78411",
     "app_wizard_version": "1.0.0",
     "configuration": {
         "tenant_id": {
