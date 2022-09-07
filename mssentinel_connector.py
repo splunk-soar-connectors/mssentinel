@@ -17,12 +17,32 @@ import phantom.app as phantom
 from phantom.base_connector import BaseConnector
 from phantom.action_result import ActionResult
 
-# Usage of the consts file is recommended
-# from sentinel_consts import *
-
 import requests
 import json
 from bs4 import BeautifulSoup
+
+
+def _get_error_message_from_exception(e):
+    error_code = None
+    error_msg = LOG_ERROR_MSG_UNKNOWN
+
+    try:
+        if hasattr(e, "args"):
+            if len(e.args) > 1:
+                error_code = e.args[0]
+                error_msg = e.args[1]
+            elif len(e.args) == 1:
+                error_msg = e.args[0]
+    except Exception:
+        pass
+
+    if not error_code:
+        error_text = "Error Message: {}".format(error_msg)
+    else:
+        error_text = "Error Code: {}. Error Message: {}".format(error_code, error_msg)
+
+    return error_text
+
 
 class RetVal(tuple):
 
@@ -119,9 +139,11 @@ class SentinelConnector(BaseConnector):
         try:
             resp_json = r.json()
         except Exception as e:
+            error_txt = _get_error_message_from_exception(e)
             return RetVal(
                 action_result.set_status(
-                    phantom.APP_ERROR, "Unable to parse JSON response. Error: {0}".format(str(e))
+                    phantom.APP_ERROR,
+                    "Unable to parse JSON response. Error: {0}".format(str(error_txt))
                 ), None
             )
 
@@ -190,28 +212,16 @@ class SentinelConnector(BaseConnector):
                 **kwargs
             )
 
-            if r.status_code == 401:
-                ret_val = self._generate_new_access_token(action_result)
-                if phantom.is_fail(ret_val):
-                    return action_result.get_status(), None
-                access_token = self._state[STATE_TOKEN_KEY]
-                kwargs["headers"]["Authorization"] = f"Bearer {access_token}"
-
-                r = request_func(
-                    endpoint,
-                    verify=verify,
-                    **kwargs
-                )
-
         except Exception as e:
+            error_txt = _get_error_message_from_exception(e)
             return RetVal(
                 action_result.set_status(
-                    phantom.APP_ERROR, "Error Connecting to server. Details: {0}".format(str(e))
-                ), resp_json
-            )
+                    phantom.APP_ERROR,
+                    "Error Connecting to server. Details: {0}".format(str(error_txt))
+                ), resp_json)
 
         return self._process_response(r, action_result)
-    
+
     def _make_sentinel_call(self, endpoint, action_result, method="get", **kwargs):
 
         if not "params" in kwargs:
@@ -229,7 +239,19 @@ class SentinelConnector(BaseConnector):
         access_token = self._state[STATE_TOKEN_KEY]
         kwargs["headers"]["Authorization"] = f"Bearer {access_token}"
 
-        return self._make_rest_call(endpoint, action_result, method, **kwargs)
+        ret_val, resp_json = self._make_rest_call(endpoint, action_result, method, **kwargs)
+
+        # If token is expired, generate new token and re-execute last call
+        if LOG_TOKEN_EXPIRED_MSG in action_result.get_message():
+            status = self._generate_new_access_token(action_result=action_result)
+
+            if phantom.is_fail(status):
+                return action_result.get_status(), None
+
+            kwargs["headers"]["Authorization"] = f"Bearer {self._state[STATE_TOKEN_KEY]}"
+            return self._make_rest_call(endpoint, action_result, method, **kwargs)
+
+        return ret_val, resp_json
 
     def _make_paginated_sentinel_call(self, endpoint, action_result, params, limit):
         
@@ -246,7 +268,9 @@ class SentinelConnector(BaseConnector):
             if phantom.is_fail(ret_val):
                 return action_result.get_status(), None
 
-            # TODO: Error Handling            
+            if SENTINEL_JSON_VALUE not in res_json:
+                return phantom.APP_ERROR, LOG_NO_VALUE
+
             for entry in res_json[SENTINEL_JSON_VALUE]:
                 results_list.append(entry)
             
@@ -317,10 +341,176 @@ class SentinelConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
+    def _check_for_existing_container(self, action_result, name):
+            """Check for existing container and return container ID and remaining margin count.
+            Parameters:
+                :param action_result: object of ActionResult class
+                :param name: Name of the container to check
+            Returns:
+                :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR),
+                        cid(container_id),
+                        count(remaining margin calculated with given _max_artifacts)
+            """
+            cid = None
+            count = None
+
+            base_url = self.get_phantom_base_url()
+            base_url = base_url if base_url.endswith('/') else base_url + '/'
+            url = f'{base_url}rest/container?_filter_name__contains="{name}"&sort=start_time&order=desc'
+
+            try:
+                r = requests.get(url, verify=False)
+            except Exception as e:
+                self.debug_print("Error making local rest call: {0}".format(str(e)))
+                self.debug_print('DB QUERY: {}'.format(url))
+                return phantom.APP_ERROR, cid, count
+
+            try:
+                resp_json = r.json()
+            except Exception as e:
+                self.debug_print('Exception caught: {0}'.format(str(e)))
+                return phantom.APP_ERROR, cid, count
+
+            container = resp_json.get('data', [])
+            if not container:
+                self.debug_print("Not having any existing container")
+                return phantom.APP_ERROR, cid, count
+
+            # Consider latest container as existing container from the received list of containers
+            try:
+                container = container[0]
+                if not isinstance(container, dict):
+                    self.debug_print("Invalid response received while checking for the existing container")
+                    return phantom.APP_ERROR, cid, count
+            except Exception as e:
+                self.debug_print("Invalid response received while checking for the existing container. Error: {}".format(str(e)))
+                return phantom.APP_ERROR, cid, count
+
+            cid = container.get('id')
+            artifact_count = container.get('artifact_count')
+
+            self.debug_print("Existing Container ID: {}".format(cid))
+            self.debug_print("Existing Container artifacts count: {}".format(artifact_count))
+
+            try:
+                count = int(self._max_artifacts) - int(artifact_count)
+                # Not having space in latest container or exceed a configured limit for artifacts
+                if count <= 0:
+                    self.debug_print("Not having enough space for the artifacts in the existing container")
+                    cid = None
+                    count = None
+            except Exception as e:
+                self.debug_print("Error occurred while calculating remaining container space. Error: {}".format(str(e)))
+                cid = None
+                count = None
+            return phantom.APP_SUCCESS, cid, count
+
+    def _save_artifacts(self, action_result, results, key):
+        """Ingest all the given artifacts accordingly into the new or existing container.
+        Parameters:
+            :param action_result: object of ActionResult class
+            :param results: list of artifacts of IoCs or alerts results
+            :param key: name of the container in which data will be ingested
+        Returns:
+            :return: None
+        """
+        # Initialize
+        cid = None
+        start = 0
+        count = None
+
+        # If not results return
+        if not results:
+            return
+
+        # Check for existing container only if it's a scheduled/interval poll and not first run
+        if not (self.is_poll_now() or self._state['first_run']):
+            ret_val, cid, count = self._check_for_existing_container(action_result, key)
+            if phantom.is_fail(ret_val):
+                self.debug_print("Failed to check for existing container")
+
+        if cid and count:
+            ret_val = self._ingest_artifacts(action_result, results[:count], key, cid=cid)
+            if phantom.is_fail(ret_val):
+                self.debug_print("Failed to save ingested artifacts in the existing container")
+                return
+            # One part is ingested
+            start = count
+
+        # Divide artifacts list into chunks which length equals to max_artifacts configured in the asset
+        artifacts = [results[i:i + self._max_artifacts] for i in range(start, len(results), self._max_artifacts)]
+
+        for artifacts_list in artifacts:
+            ret_val = self._ingest_artifacts(action_result, artifacts_list, key)
+            if phantom.is_fail(ret_val):
+                self.debug_print("Failed to save ingested artifacts in the new container")
+                return
+
+    def _ingest_artifacts(self, action_result, artifacts, key, cid=None):
+        """Ingest artifacts into the Phantom server.
+        Parameters:
+            :param action_result: object of ActionResult class
+            :param artifacts: list of artifacts
+            :param key: name of the container in which data will be ingested
+            :param cid: value of container ID
+        Returns:
+            :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
+        """
+        self.debug_print(f"Ingesting {len(artifacts)} artifacts for {key} results into the {'existing' if {cid} else 'new'} container")
+        ret_val, message, cid = self._save_ingested(action_result, artifacts, key, cid=cid)
+
+        if phantom.is_fail(ret_val):
+            self.debug_print("Failed to save ingested artifacts, error msg: {}".format(message))
+            return ret_val
+
+        return phantom.APP_SUCCESS
+
+    def _save_ingested(self, action_result, artifacts, key, cid=None):
+        """Save the artifacts into the given container ID(cid) and if not given create new container with given key(name).
+        Parameters:
+            :param action_result: object of ActionResult class
+            :param artifacts: list of artifacts of IoCs or incidents results
+            :param key: name of the container in which data will be ingested
+            :param cid: value of container ID
+        Returns:
+            :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR), message, cid(container_id)
+        """
+        artifacts[-1]["run_automation"] = True
+        if cid:
+            for artifact in artifacts:
+                artifact['container_id'] = cid
+            ret_val, message, _ = self.save_artifacts(artifacts)
+            self.debug_print("save_artifacts returns, value: {}, reason: {}".format(ret_val, message))
+        else:
+            container = dict()
+            container.update({
+                "name": key,
+                "description": 'incident ingested using MS Sentinel API',
+                "source_data_identifier": key,
+                "artifacts": artifacts
+            })
+            ret_val, message, cid = self.save_container(container)
+            self.debug_print("save_container (with artifacts) returns, value: {}, reason: {}, id: {}".format(ret_val, message, cid))
+        return ret_val, message, cid
+
+    def _create_incident_artifacts(self, action_result, incident):
+        artifacts = []
+
+        incident_artifact = {}
+        incident_artifact['label'] = 'incident'
+        incident_artifact['name'] = 'incident Artifact'
+        incident_artifact['source_data_identifier'] = incident.get('name')
+        incident_artifact['data'] = incident
+
+        cef = incident
+        incident_artifact['cef'] = cef
+        # Append to the artifacts list
+        artifacts.append(incident_artifact)
+
+        return artifacts
+
     def _handle_on_poll(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-
-        #return action_result.set_status(phantom.APP_ERROR, "Not implemented yet")
 
         self.save_progress("In action handler for: {}".format(self.get_action_identifier()))
 
@@ -328,11 +518,12 @@ class SentinelConnector(BaseConnector):
 
         start_time_scheduled_poll = config.get(SENTINEL_APP_CONFIG_START_TIME_SCHEDULED_POLL)
         last_modified_time = (datetime.now() - timedelta(days=7)).strftime(SENTINEL_APP_DT_STR_FORMAT) # Let's fall back to the last 7 days
+        self._max_artifacts = config.get("max_artifacts", SENTINEL_APP_CONFIG_MAX_ARTIFACTS_DEFAULT)
         incidents = []
+        max_incidents = SENTINEL_APP_CONFIG_MAX_INCIDENTS_DEFAULT
 
         if not self._state.get(STATE_TOKEN_KEY):
             self._generate_new_access_token(action_result)
-
 
         if start_time_scheduled_poll:
             ret_val = self._check_date_format(action_result, start_time_scheduled_poll)
@@ -346,45 +537,54 @@ class SentinelConnector(BaseConnector):
 
         elif self._state.get(STATE_FIRST_RUN, True):
             self._state[STATE_FIRST_RUN] = False
-            max_incidents = int(config.get(SENTINEL_APP_CONFIG_FIRST_RUN_MAX_INCIDENTS, 1000))
+            max_incidents = int(config.get(SENTINEL_APP_CONFIG_FIRST_RUN_MAX_INCIDENTS, max_incidents))
         else:
             if self._state.get(STATE_LAST_TIME):
                 last_modified_time = self._state[STATE_LAST_TIME]
 
-
         endpoint = f"{self._api_url}{SENTINEL_API_INCIDENTS}"
     
-        filter = f"(properties/lastModifiedTimeUtc ge {last_modified_time})"
+        filter = f"(properties/lastModifiedTimeUtc gt {last_modified_time})"
 
         params = {
             "$filter": filter,
             "$top": SENTINEL_API_INCIDENTS_PAGE_SIZE
         }
 
-        ret_val, incident_list = self._make_paginated_sentinel_call(endpoint, action_result, params, max_incidents)
+        ret_val, incidents = self._make_paginated_sentinel_call(endpoint, action_result, params, max_incidents)
         if phantom.is_fail(ret_val):
             self.save_progress(LOG_FAILED_RETRIEVING_INCIDENTS)
             return action_result.get_status()
 
-        # TODO: Create / Update containers appropriately
-        #  https://github.com/splunk-soar-connectors/msgraphsecurityapi/blob/PAPP-5080-initial-release/microsoftgraphsecurityapi_connector.py
+        self.save_progress(f"Successfully fetched {len(incidents)} incidents.")
 
+        # Ingest the incidents
+        for incident in incidents:
+            try:
+                # Create artifacts from the incidents
+                artifacts = self._create_incident_artifacts(action_result, incident)
+            except Exception as e:
+                self.debug_print("Error occurred while creating artifacts for incidents. Error: {}".format(str(e)))
+                # Make incidents as empty list
+                incidents = list()
 
-        for incident in incident_list:
-            action_result.add_data(incident)
+            # Save artifacts for incidents
+            try:
+                self._save_artifacts(action_result, artifacts, key=incident["properties"]["title"])
+            except Exception as e:
+                self.debug_print("Error occurred while saving artifacts for incidents. Error: {}".format(str(e)))
 
         summary = action_result.update_summary({})
-        summary["total_incidents"] = len(incident_list)
+        summary["total_incidents"] = len(incidents)
         summary["filter"] = filter
         summary["first_run"] = self._state.get(STATE_FIRST_RUN, True)
 
         if incidents:
-            if SENTINEL_JSON_LAST_MODIFIED not in incidents[0]:
+            if SENTINEL_JSON_LAST_MODIFIED not in incidents[0]["properties"]:
                 return action_result.set_status(phantom.APP_ERROR, LOG_NO_LAST_MODIFIED_TIME)
 
-            self._state[STATE_LAST_TIME] = incidents[0][SENTINEL_JSON_LAST_MODIFIED]
+            self._state[STATE_LAST_TIME] = incidents[0]["properties"][SENTINEL_JSON_LAST_MODIFIED]
             self.save_state(self._state)
-
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
@@ -617,7 +817,12 @@ class SentinelConnector(BaseConnector):
             "grant_type": "client_credentials"
         }
 
-        ret_val, resp_json = self._make_rest_call(self._login_url, action_result=action_result, data=login_payload)
+        ret_val, resp_json = self._make_rest_call(self._login_url,
+            action_result=action_result,
+            method="post",
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            data=login_payload
+        )
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()

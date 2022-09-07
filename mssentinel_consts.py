@@ -24,6 +24,8 @@ SENTINEL_JSON_LAST_MODIFIED = "lastModifiedTimeUtc"
 
 SENTINEL_APP_CONFIG_FIRST_RUN_MAX_INCIDENTS = "first_run_max_incidents"
 SENTINEL_APP_CONFIG_START_TIME_SCHEDULED_POLL = "start_time_scheduled_poll"
+SENTINEL_APP_CONFIG_MAX_ARTIFACTS_DEFAULT = 500
+SENTINEL_APP_CONFIG_MAX_INCIDENTS_DEFAULT = 1000
 
 SENTINEL_APP_DT_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
@@ -43,4 +45,7 @@ LOG_UTC_SINCE_TIME_ERROR = "Please provide time in the span of UTC time since Un
 LOG_GREATER_EQUAL_TIME_ERR = 'Invalid {0}, can not be greater than or equal to current UTC time'
 LOG_CONFIG_TIME_POLL_NOW = "'Time range for POLL NOW' or 'Start Time for Schedule/Manual POLL' asset configuration parameter"
 
-LOG_NO_LAST_MODIFIED_TIME = "Could not extract lastModifiedTimeUtc from latest ingested alert."
+LOG_NO_LAST_MODIFIED_TIME = "Could not extract lastModifiedTimeUtc from latest ingested incident."
+LOG_NO_VALUE = "Could not extract value from latest ingested incidents."
+LOG_ERROR_MSG_UNKNOWN = "Unknown error occurred. Please check the asset configuration and|or action parameters."
+LOG_TOKEN_EXPIRED_MSG = "The access token is invalid"
