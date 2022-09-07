@@ -50,11 +50,15 @@ GET https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroup
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
-### Get individual incident with last updated time
+### Get individual incident with last updated time eq to X
 GET https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents?api-version=2021-04-01&$filter=(properties/lastModifiedTimeUtc eq 2022-08-30T10:26:27.3710349Z)
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
+### Get all incidents with last updated time ge than X
+GET https://management.azure.com/subscriptions/de582eca-4f28-4f8d-9ded-9b0cd2803739/resourceGroups/demomachine_group/providers/Microsoft.OperationalInsights/workspaces/customworkspace/providers/Microsoft.SecurityInsights/incidents?api-version=2021-04-01&$top=50&$filter=(properties/lastModifiedTimeUtc ge 2022-08-30T11:35:05Z)
+Authorization: Bearer {{token}}
+Content-Type: application/json
 
 ### Paginated
 GET https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents?api-version=2021-04-01&$top=1
