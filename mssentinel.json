@@ -11,7 +11,7 @@
     "product_version_regex": ".*",
     "publisher": "Splunk Community",
     "license": "Copyright (c) Splunk Community, 2022",
-    "app_version": "0.1.0",
+    "app_version": "0.1.2",
     "utctime_updated": "2022-04-30T14:52:08.552463Z",
     "package_name": "phantom_mssentinel",
     "main_module": "mssentinel_connector.py",
@@ -103,7 +103,7 @@
         {
             "action": "get incident",
             "identifier": "get_incident",
-            "description": "Gets a given incident.",
+            "description": "Gets a given incident",
             "type": "generic",
             "read_only": true,
             "parameters": {
@@ -290,7 +290,7 @@
         {
             "action": "get incident alerts",
             "identifier": "get_incident_alerts",
-            "description": "Gets all alerts for an incident.",
+            "description": "Gets all alerts for an incident",
             "type": "generic",
             "parameters": {
                 "incident_name": {
@@ -390,7 +390,7 @@
         {
             "action": "list incidents",
             "identifier": "list_incidents",
-            "description": "Gets all incidents.",
+            "description": "Gets all incidents",
             "parameters": {
                 "limit": {
                     "data_type": "numeric",
@@ -515,7 +515,7 @@
         {
             "action": "update incident",
             "identifier": "update_incident",
-            "description": "Updates an existing incident.",
+            "description": "Updates an existing incident",
             "parameters": {
                 "incident_name": {
                     "description": "Incident Name",
@@ -756,7 +756,7 @@
         {
             "action": "add incident comment",
             "identifier": "add_incident_comment",
-            "description": "Creates a new incident comment.",
+            "description": "Creates a new incident comment",
             "parameters": {
                 "incident_name": {
                     "description": "Incident Name",
