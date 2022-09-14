@@ -242,14 +242,15 @@ class SentinelConnector(BaseConnector):
         ret_val, resp_json = self._make_rest_call(endpoint, action_result, method, **kwargs)
 
         # If token is expired, generate new token and re-execute last call
-        if LOG_TOKEN_EXPIRED_MSG in action_result.get_message():
-            status = self._generate_new_access_token(action_result=action_result)
+        for msg in LOG_TOKEN_EXPIRED_MSG:
+            if msg in action_result.get_message():
+                status = self._generate_new_access_token(action_result=action_result)
 
-            if phantom.is_fail(status):
-                return action_result.get_status(), None
+                if phantom.is_fail(status):
+                    return action_result.get_status(), None
 
-            kwargs["headers"]["Authorization"] = f"Bearer {self._state[STATE_TOKEN_KEY]}"
-            return self._make_rest_call(endpoint, action_result, method, **kwargs)
+                kwargs["headers"]["Authorization"] = f"Bearer {self._state[STATE_TOKEN_KEY]}"
+                return self._make_rest_call(endpoint, action_result, method, **kwargs)
 
         return ret_val, resp_json
 
@@ -341,11 +342,11 @@ class SentinelConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _check_for_existing_container(self, action_result, name):
+    def _check_for_existing_container(self, action_result, key):
             """Check for existing container and return container ID and remaining margin count.
             Parameters:
                 :param action_result: object of ActionResult class
-                :param name: Name of the container to check
+                :param key: Source Data ID of the container to check
             Returns:
                 :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR),
                         cid(container_id),
@@ -356,7 +357,7 @@ class SentinelConnector(BaseConnector):
 
             base_url = self.get_phantom_base_url()
             base_url = base_url if base_url.endswith('/') else base_url + '/'
-            url = f'{base_url}rest/container?_filter_name__contains="{name}"&sort=start_time&order=desc'
+            url = f'{base_url}rest/container?_filter_source_data_identifier="{key}"&sort=start_time&order=desc'
 
             try:
                 r = requests.get(url, verify=False)
@@ -405,12 +406,13 @@ class SentinelConnector(BaseConnector):
                 count = None
             return phantom.APP_SUCCESS, cid, count
 
-    def _save_artifacts(self, action_result, results, key):
+    def _save_artifacts(self, action_result, results, name, key):
         """Ingest all the given artifacts accordingly into the new or existing container.
         Parameters:
             :param action_result: object of ActionResult class
             :param results: list of artifacts of IoCs or alerts results
-            :param key: name of the container in which data will be ingested
+            :param name: name of the container in which data will be ingested
+            :param key: source ID of the container in which data will be ingested
         Returns:
             :return: None
         """
@@ -430,7 +432,7 @@ class SentinelConnector(BaseConnector):
                 self.debug_print("Failed to check for existing container")
 
         if cid and count:
-            ret_val = self._ingest_artifacts(action_result, results[:count], key, cid=cid)
+            ret_val = self._ingest_artifacts(action_result, results[:count], name, key, cid=cid)
             if phantom.is_fail(ret_val):
                 self.debug_print("Failed to save ingested artifacts in the existing container")
                 return
@@ -441,23 +443,24 @@ class SentinelConnector(BaseConnector):
         artifacts = [results[i:i + self._max_artifacts] for i in range(start, len(results), self._max_artifacts)]
 
         for artifacts_list in artifacts:
-            ret_val = self._ingest_artifacts(action_result, artifacts_list, key)
+            ret_val = self._ingest_artifacts(action_result, artifacts_list, name, key)
             if phantom.is_fail(ret_val):
                 self.debug_print("Failed to save ingested artifacts in the new container")
                 return
 
-    def _ingest_artifacts(self, action_result, artifacts, key, cid=None):
+    def _ingest_artifacts(self, action_result, artifacts, name, key, cid=None):
         """Ingest artifacts into the Phantom server.
         Parameters:
             :param action_result: object of ActionResult class
             :param artifacts: list of artifacts
-            :param key: name of the container in which data will be ingested
+            :param name: name of the container in which data will be ingested
+            :param key: source ID of the container in which data will be ingested
             :param cid: value of container ID
         Returns:
             :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
         """
         self.debug_print(f"Ingesting {len(artifacts)} artifacts for {key} results into the {'existing' if {cid} else 'new'} container")
-        ret_val, message, cid = self._save_ingested(action_result, artifacts, key, cid=cid)
+        ret_val, message, cid = self._save_ingested(action_result, artifacts, name, key, cid=cid)
 
         if phantom.is_fail(ret_val):
             self.debug_print("Failed to save ingested artifacts, error msg: {}".format(message))
@@ -465,12 +468,13 @@ class SentinelConnector(BaseConnector):
 
         return phantom.APP_SUCCESS
 
-    def _save_ingested(self, action_result, artifacts, key, cid=None):
+    def _save_ingested(self, action_result, artifacts, name, key, cid=None):
         """Save the artifacts into the given container ID(cid) and if not given create new container with given key(name).
         Parameters:
             :param action_result: object of ActionResult class
             :param artifacts: list of artifacts of IoCs or incidents results
-            :param key: name of the container in which data will be ingested
+            :param name: name of the container in which data will be ingested
+            :param key: source ID of the container in which data will be ingested
             :param cid: value of container ID
         Returns:
             :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR), message, cid(container_id)
@@ -484,7 +488,7 @@ class SentinelConnector(BaseConnector):
         else:
             container = dict()
             container.update({
-                "name": key,
+                "name": name,
                 "description": 'incident ingested using MS Sentinel API',
                 "source_data_identifier": key,
                 "artifacts": artifacts
@@ -570,7 +574,7 @@ class SentinelConnector(BaseConnector):
 
             # Save artifacts for incidents
             try:
-                self._save_artifacts(action_result, artifacts, key=incident["properties"]["title"])
+                self._save_artifacts(action_result, artifacts, name=incident["properties"]["title"], key=incident["name"])
             except Exception as e:
                 self.debug_print("Error occurred while saving artifacts for incidents. Error: {}".format(str(e)))
 
