@@ -42,28 +42,34 @@
             "required": true,
             "order": 3
         },
+        "workspace_id": {
+            "description": "The id of the workspace",
+            "data_type": "string",
+            "required": true,
+            "order": 4
+        },
         "client_id": {
             "description": "Application (client) ID assigned to your Graph Security API app",
             "data_type": "string",
             "required": true,
-            "order": 4
+            "order": 5
         },
         "client_secret": {
             "description": "Client Secret",
             "data_type": "password",
             "required": true,
-            "order": 5
+            "order": 6
         },
         "first_run_max_incidents": {
             "description": "Maximum Incidents for scheduled polling first time",
             "data_type": "numeric",
             "default": 1000,
-            "order": 6
+            "order": 7
         },
         "start_time_scheduled_poll": {
             "description": "Start Time for Schedule/Manual POLL (Use this format: 1970-01-01T00:00:00Z)",
             "data_type": "string",
-            "order": 7
+            "order": 8
         }
     },
     "actions": [
@@ -814,6 +820,25 @@
                     "data_path": "action_result.data.*.properties.lastModifiedTimeUtc",
                     "data_type": "string"
                 }
+            ],
+            "type": "generic",
+            "read_only": true,
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "run query",
+            "identifier": "run_query",
+            "description": "Queries the Sentinel Log Analytics workspace for data using KQL",
+            "parameters": {
+                "query": {
+                    "description": "Query in KQL",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "order": 0
+                }
+            },
+            "output": [
             ],
             "type": "generic",
             "read_only": true,

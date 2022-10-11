@@ -222,6 +222,29 @@ class SentinelConnector(BaseConnector):
 
         return self._process_response(r, action_result)
 
+    def _make_loganalytics_query(self, action_result, method="post", **kwargs):        
+        endpoint = f"{self._loganalytics_api_url}"
+
+        if not "headers" in kwargs:
+            kwargs["headers"] = {}
+
+        access_token = self._state[STATE_LOGANALYTICS_TOKEN_KEY]
+        kwargs["headers"]["Authorization"] = f"Bearer {access_token}"
+
+        ret_val, resp_json = self._make_rest_call(endpoint, action_result, method, **kwargs)
+
+        for msg in LOG_TOKEN_EXPIRED_MSG:
+            if msg in action_result.get_message():
+                status = self._generate_new_loganalytics_access_token(action_result=action_result)
+
+                if phantom.is_fail(status):
+                    return action_result.get_status(), None
+
+                kwargs["headers"]["Authorization"] = f"Bearer {self._state[STATE_LOGANALYTICS_TOKEN_KEY]}"
+                return self._make_rest_call(endpoint, action_result, method, **kwargs)
+
+        return ret_val, resp_json
+
     def _make_sentinel_call(self, endpoint, action_result, method="get", **kwargs):
 
         if not "params" in kwargs:
@@ -754,7 +777,36 @@ class SentinelConnector(BaseConnector):
         action_result.add_data(response)
 
         return action_result.set_status(phantom.APP_SUCCESS)
- 
+
+    def _handle_run_query(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        self.save_progress("In action handler for: {}".format(self.get_action_identifier()))
+
+        query = param["query"]
+
+        payload = {
+            "query": query
+        }
+
+        ret_val, response = self._make_loganalytics_query(action_result, method="post", json=payload)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        rows = []
+        for row in response["tables"][0]["rows"]:
+            row_data = {}
+            for i, entry in enumerate(row):
+                col_name = response["tables"][0]["columns"][i]["name"]
+                col_value = entry
+                row_data[col_name] = col_value
+            rows.append(row_data)
+
+        for row in rows:
+            action_result.add_data(row)
+    
+        return action_result.set_status(phantom.APP_SUCCESS)
+
 
     def handle_action(self, param):
         ret_val = phantom.APP_SUCCESS
@@ -778,6 +830,8 @@ class SentinelConnector(BaseConnector):
             ret_val = self._handle_get_incident_entities(param)
         elif action_id == "add_incident_comment":
             ret_val = self._handle_add_incident_comment(param)
+        elif action_id == "run_query":
+            ret_val = self._handle_run_query(param)
         elif action_id == "on_poll":
             ret_val = self._handle_on_poll(param)
 
@@ -795,11 +849,15 @@ class SentinelConnector(BaseConnector):
         self._subscription_id = config["subscription_id"]
         self._resource_group_name = config["resource_group_name"]
         self._workspace_name = config["workspace_name"]
+        self._workspace_id = config["workspace_id"]
         self._client_id = config["client_id"]
         self._client_secret = config["client_secret"]
 
         self._login_url = SENTINEL_LOGIN_URL.format(tenant_id=self._tenant_id)
+        self._loganalytics_login_url = LOGANALYTICS_LOGIN_URL.format(tenant_id=self._tenant_id)
+         
         self._api_url = SENTINEL_API_URL.format(subscription_id=self._subscription_id, resource_group=self._resource_group_name, workspace_name=self._workspace_name)
+        self._loganalytics_api_url = LOGANALYTICS_API_URL.format(workspace_id=self._workspace_id)
 
         return phantom.APP_SUCCESS
 
@@ -832,6 +890,30 @@ class SentinelConnector(BaseConnector):
             return action_result.get_status()
 
         self._state[STATE_TOKEN_KEY] = resp_json[SENTINEL_JSON_ACCESS_TOKEN]
+        self.save_state(self._state)
+        self.load_state()
+
+        return phantom.APP_SUCCESS
+    
+    def _generate_new_loganalytics_access_token(self, action_result):
+        login_payload = {
+            "client_id": self._client_id,
+            "client_secret": self._client_secret,
+            "resource": LOGANALYTICS_LOGIN_RESOURCE,
+            "grant_type": "client_credentials"
+        }
+
+        ret_val, resp_json = self._make_rest_call(self._loganalytics_login_url,
+            action_result=action_result,
+            method="post",
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            data=login_payload
+        )
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        self._state[STATE_LOGANALYTICS_TOKEN_KEY] = resp_json[SENTINEL_JSON_ACCESS_TOKEN]
         self.save_state(self._state)
         self.load_state()
 

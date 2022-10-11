@@ -1,6 +1,9 @@
 # Login
 SENTINEL_LOGIN_URL = "https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
 SENTINEL_LOGIN_SCOPE = "https://management.azure.com/.default"
+LOGANALYTICS_LOGIN_URL = "https://login.microsoftonline.com/{tenant_id}/oauth2/token"
+LOGANALYTICS_LOGIN_RESOURCE = "https://api.loganalytics.io"
+
 
 # Endpoint Routes and Parameters
 SENTINEL_API_URL = "https://management.azure.com/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.OperationalInsights/workspaces/{workspace_name}/providers/Microsoft.SecurityInsights"
@@ -8,11 +11,13 @@ SENTINEL_API_VERSION = "2022-08-01"
 SENTINEL_API_INCIDENTS = "/incidents"
 SENTINEL_API_INCIDENTS_PAGE_SIZE = 50
 
+LOGANALYTICS_API_URL = "https://api.loganalytics.io/v1/workspaces/{workspace_id}/query"
 
 # State management
 STATE_TOKEN_KEY = "sentinel_token"
 STATE_LAST_TIME = "last_time"
 STATE_FIRST_RUN = "first_run"
+STATE_LOGANALYTICS_TOKEN_KEY = "loganalytics_token"
 
 # JSON returned from Sentinel
 SENTINEL_JSON_ACCESS_TOKEN = "access_token"
