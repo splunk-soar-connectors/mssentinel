@@ -53,4 +53,4 @@ LOG_CONFIG_TIME_POLL_NOW = "'Time range for POLL NOW' or 'Start Time for Schedul
 LOG_NO_LAST_MODIFIED_TIME = "Could not extract lastModifiedTimeUtc from latest ingested incident."
 LOG_NO_VALUE = "Could not extract value from latest ingested incidents."
 LOG_ERROR_MSG_UNKNOWN = "Unknown error occurred. Please check the asset configuration and|or action parameters."
-LOG_TOKEN_EXPIRED_MSG = ["The access token is invalid", "ExpiredAuthenticationToken"]
+LOG_TOKEN_EXPIRED_MSG = ["The access token is invalid", "ExpiredAuthenticationToken", "InvalidTokenError"]

@@ -783,10 +783,14 @@ class SentinelConnector(BaseConnector):
         self.save_progress("In action handler for: {}".format(self.get_action_identifier()))
 
         query = param["query"]
+        timespan = param.get("timespan")
 
         payload = {
             "query": query
         }
+
+        if timespan:
+            payload["timespan"] = timespan
 
         ret_val, response = self._make_loganalytics_query(action_result, method="post", json=payload)
 
@@ -794,17 +798,24 @@ class SentinelConnector(BaseConnector):
             return action_result.get_status()
 
         rows = []
-        for row in response["tables"][0]["rows"]:
-            row_data = {}
-            for i, entry in enumerate(row):
-                col_name = response["tables"][0]["columns"][i]["name"]
-                col_value = entry
-                row_data[col_name] = col_value
-            rows.append(row_data)
+        for table in response["tables"]:
+            table_name = table["name"]
+            for row in table["rows"]:
+                row_data = {
+                    "SentinelTableName": table_name
+                }
+                for i, entry in enumerate(row):
+                    col_name = table["columns"][i]["name"]
+                    col_value = entry
+                    row_data[col_name] = col_value
+                rows.append(row_data)
 
         for row in rows:
             action_result.add_data(row)
-    
+
+        summary = action_result.update_summary({})
+        summary["total_rows"] = len(rows)
+
         return action_result.set_status(phantom.APP_SUCCESS)
 
 

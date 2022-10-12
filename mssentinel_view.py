@@ -20,6 +20,8 @@ def _get_ctx_result(result, provides):
        ctx_result['data'] = data 
     elif provides == 'get incident entities':
         ctx_result['data'] = data
+    elif provides == 'run query':
+        ctx_result['data'] = data
     else:
         ctx_result['data'] = data
 
@@ -67,3 +69,16 @@ def get_incident_entities(provides, all_app_runs, context):
             results.append(ctx_result)
 
     return 'mssentinel_get_incident_entities.html'
+
+def run_query(provides, all_app_runs, context):
+
+    context['results'] = results = []
+
+    for summary, action_results in all_app_runs:
+        for result in action_results:
+            ctx_result = _get_ctx_result(result, provides)
+            if not ctx_result:
+                continue
+            results.append(ctx_result)
+
+    return 'mssentinel_run_query.html'

@@ -831,18 +831,31 @@
             "description": "Queries the Sentinel Log Analytics workspace for data using KQL",
             "parameters": {
                 "query": {
-                    "description": "Query in KQL",
+                    "description": "Query in KQL (for example, \"SecurityIncident\" will retrieve the Sentinel incidents table)",
                     "data_type": "string",
                     "required": true,
                     "primary": true,
                     "order": 0
+                },
+                "timespan": {
+                    "description": "Time Interval in ISO 8601 Duration format. For example, \"P7D\" for last 7 days or an interval like \"2007-03-01T13:00:00Z/2008-05-11T15:30:00Z\"",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 1
                 }
             },
             "output": [
             ],
             "type": "generic",
             "read_only": true,
-            "versions": "EQ(*)"
+            "versions": "EQ(*)",
+            "render": {
+                "width": 12,
+                "title": "Run Query",
+                "type": "custom",
+                "view": "mssentinel_view.run_query",
+                "height": 5
+            }
         }
     ]
 }
