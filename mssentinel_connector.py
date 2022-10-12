@@ -43,6 +43,13 @@ def _get_error_message_from_exception(e):
 
     return error_text
 
+def is_positive_int(value):
+    try:
+        value = int(value)
+        return True if value > 0 else False
+    except Exception:
+        pass
+    return False
 
 class RetVal(tuple):
 
@@ -784,10 +791,18 @@ class SentinelConnector(BaseConnector):
 
         query = param["query"]
         timespan = param.get("timespan")
+        max_rows = param["max_rows"]
+
 
         payload = {
             "query": query
         }
+
+
+        if (is_positive_int(max_rows)):
+            payload["maxRows"] = max_rows
+        else:
+            return action_result.set_status(phantom.APP_ERROR, LOG_FAILED_PARSING_MAX_ROWS)
 
         if timespan:
             payload["timespan"] = timespan

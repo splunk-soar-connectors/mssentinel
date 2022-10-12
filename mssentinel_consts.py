@@ -54,3 +54,4 @@ LOG_NO_LAST_MODIFIED_TIME = "Could not extract lastModifiedTimeUtc from latest i
 LOG_NO_VALUE = "Could not extract value from latest ingested incidents."
 LOG_ERROR_MSG_UNKNOWN = "Unknown error occurred. Please check the asset configuration and|or action parameters."
 LOG_TOKEN_EXPIRED_MSG = ["The access token is invalid", "ExpiredAuthenticationToken", "InvalidTokenError"]
+LOG_FAILED_PARSING_MAX_ROWS = "Failed to parse max_rows parameter - a positive integer is required"

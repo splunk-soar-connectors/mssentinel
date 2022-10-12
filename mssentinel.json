@@ -842,9 +842,45 @@
                     "data_type": "string",
                     "required": false,
                     "order": 1
+                },
+                "max_rows": {
+                    "description": "Maximum number of rows to return in the result. Defaults to 3000",
+                    "data_type": "numeric",
+                    "required": true,
+                    "default": 3000,
+                    "order": 2
                 }
             },
             "output": [
+                {
+                    "data_path": "action_result.parameter.query",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.timespan",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.max_rows",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.summary.total_rows",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.TimeGenerated",
+                    "data_type": "string"
+                }
+
             ],
             "type": "generic",
             "read_only": true,
