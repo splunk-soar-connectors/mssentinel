@@ -105,7 +105,5 @@ Accept: application/json
 {
         "maxRows": 1,
         "query": "SecurityIncident | where TimeGenerated >= ago(60d)",
-        "workspaceFilters": {
-            "regions": []
-        }
+        "workspaces": ["0eefde87-49fe-484a-b408-1d9225e1573d"]
 }
