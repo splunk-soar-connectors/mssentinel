@@ -31,7 +31,15 @@
 
     <h1>Usage</h1>
     <h2>How Sentinel handles identifiers</h2>
-    <p></p>
+    <p>Actions like <b>get incident</b> take an <i>incident name</i> input parameter. This can be captured from the Sentinel API or Web UI, but it's not to be confused with the Incident Number or the Title.
+      The Incident Name is the last component of the link to the incident that can be reviewed in Sentinel. For example, the Incident Name corresponding to 
+    </p>
+    <p><code><pre>
+      https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/de582eca-4f28-4f8d-9ded-9b0cd2803739/resourceGroups/demomachine_group/providers/Microsoft.OperationalInsights/workspaces/customworkspace/providers/Microsoft.SecurityInsights/Incidents/80289647-8743-4a67-87db-9409e597b0db
+    </pre></code>
+    </p>
+
+    <p>is simply 80289647-8743-4a67-87db-9409e597b0db</p>
     <h2>Run Query</h2>
     <h3>Timerange</h3>
     <p>The <b>timerange</b> parameter expects a <a href="https://en.wikipedia.org/wiki/ISO_8601#Durations">ISO 8061</a> duration. Please find some commonly used values below</p>

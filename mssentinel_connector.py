@@ -347,8 +347,11 @@ class SentinelConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         self.save_progress("In action handler for: {}".format(self.get_action_identifier()))
 
-        limit = int(param["limit"])
+        limit = param["limit"]
         filter = param.get("filter")
+
+        if not is_positive_int(limit):
+            return action_result.set_status(phantom.APP_ERROR, LOG_FAILED_PARSING_LIMIT) 
 
         endpoint = f"{self._api_url}{SENTINEL_API_INCIDENTS}"
 
