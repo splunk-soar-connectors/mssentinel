@@ -15,7 +15,7 @@
     "utctime_updated": "2022-04-30T14:52:08.552463Z",
     "package_name": "phantom_mssentinel",
     "main_module": "mssentinel_connector.py",
-    "min_phantom_version": "5.2.1.78411",
+    "min_phantom_version": "5.3.0",
     "app_wizard_version": "1.0.0",
     "configuration": {
         "tenant_id": {
@@ -123,7 +123,19 @@
             },
             "output": [
                 {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                },
+                {
                     "data_path": "action_result.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
                     "data_type": "string"
                 },
                 {
@@ -145,13 +157,13 @@
                         "mssentinel incident name"
                     ],
                     "column_name": "Name",
-                    "column_order": 1
+                    "column_order": 0
                 },
                 {
                     "data_path": "action_result.data.*.type",
                     "data_type": "string",
                     "column_name": "Type",
-                    "column_order": 2
+                    "column_order": 1
                 },
                 {
                     "data_path": "action_result.data.*.properties.owner.email",
@@ -169,13 +181,13 @@
                     "data_path": "action_result.data.*.properties.title",
                     "data_type": "string",
                     "column_name": "Title",
-                    "column_order": 3
+                    "column_order": 2
                 },
                 {
                     "data_path": "action_result.data.*.properties.owner.userPrincipalName",
                     "data_type": "string",
                     "column_name": "Owner UPN",
-                    "column_order": 4
+                    "column_order": 3
                 },
                 {
                     "data_path": "action_result.data.*.properties.labels.*.labelName",
@@ -264,6 +276,22 @@
             "read_only": true,
             "output": [
                 {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.parameter.incident_name",
                     "data_type": "string"
                 },
@@ -316,6 +344,22 @@
             },
             "read_only": true,
             "output": [
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
                 {
                     "data_path": "action_result.parameter.incident_name",
                     "data_type": "string"
@@ -406,18 +450,36 @@
                     "data_type": "numeric",
                     "description": "Maximum number of incidents to list",
                     "required": true,
-                    "default": 100
+                    "default": 100,
+                    "order": 0
                 },
                 "filter": {
                     "data_type": "string",
                     "description": "Filters the results, based on a Boolean condition",
-                    "required": false
+                    "required": false,
+                    "order": 1
                 }
             },
             "type": "generic",
             "read_only": true,
             "versions": "EQ(*)",
             "output": [
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
                 {
                     "data_path": "action_result.parameter.limit",
                     "data_type": "numeric"
@@ -616,6 +678,22 @@
             },
             "output": [
                 {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.parameter.incident_name",
                     "data_type": "string"
                 },
@@ -785,6 +863,22 @@
             },
             "output": [
                 {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.data.*.id",
                     "data_type": "string"
                 },
@@ -856,6 +950,22 @@
                 }
             },
             "output": [
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
                 {
                     "data_path": "action_result.parameter.query",
                     "data_type": "string"

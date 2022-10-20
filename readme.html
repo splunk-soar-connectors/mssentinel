@@ -5,11 +5,11 @@
     <h2>Azure Configuration</h2>
     <h3>Create an App Registration</h3>
     <p>In order to configure the Sentinel app, a new App Registration in the Azure Portal is required.
-        Please refer to <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#register-an-application">Register an Application</a> for 
+        Please refer to <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#register-an-application">Register an Application</a> for
         further guidance.
     </p>
     <p>
-      The Sentinel SOAR App uses the client-credentials flow to authenticate against Azure. Under your created App registration, in Certificates & Secrets, create a new Client Secret. 
+      The Sentinel SOAR App uses the client-credentials flow to authenticate against Azure. Under your created App registration, in Certificates & Secrets, create a new Client Secret.
       Save the secret value for later use during asset configuration.
     </p>
 
@@ -32,7 +32,7 @@
     <h1>Usage</h1>
     <h2>How Sentinel handles identifiers</h2>
     <p>Actions like <b>get incident</b> take an <i>incident name</i> input parameter. This can be captured from the Sentinel API or Web UI, but it's not to be confused with the Incident Number or the Title.
-      The Incident Name is the last component of the link to the incident that can be reviewed in Sentinel. For example, the Incident Name corresponding to 
+      The Incident Name is the last component of the link to the incident that can be reviewed in Sentinel. For example, the Incident Name corresponding to
     </p>
     <p><code><pre>
       https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/de582eca-4f28-4f8d-9ded-9b0cd2803739/resourceGroups/demomachine_group/providers/Microsoft.OperationalInsights/workspaces/customworkspace/providers/Microsoft.SecurityInsights/Incidents/80289647-8743-4a67-87db-9409e597b0db

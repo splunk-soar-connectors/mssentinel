@@ -6,9 +6,12 @@ LOGANALYTICS_LOGIN_RESOURCE = "https://api.loganalytics.io"
 
 
 # Endpoint Routes and Parameters
-SENTINEL_API_URL = "https://management.azure.com/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.OperationalInsights/workspaces/{workspace_name}/providers/Microsoft.SecurityInsights"
+SENTINEL_API_URL = "https://management.azure.com/subscriptions/{subscription_id}/resourceGroups/\
+{resource_group}/providers/Microsoft.OperationalInsights/workspaces/{workspace_name}/providers/Microsoft.SecurityInsights"
+
 SENTINEL_API_VERSION = "2022-08-01"
 SENTINEL_API_INCIDENTS = "/incidents"
+SENTINEL_API_INCIDENTS_PAGE_SIZE = 50
 
 LOGANALYTICS_API_URL = "https://api.loganalytics.io/v1/workspaces/{workspace_id}/query"
 
@@ -55,3 +58,4 @@ LOG_ERROR_MSG_UNKNOWN = "Unknown error occurred. Please check the asset configur
 LOG_TOKEN_EXPIRED_MSG = ["The access token is invalid", "ExpiredAuthenticationToken", "InvalidTokenError"]
 LOG_FAILED_PARSING_MAX_ROWS = "Failed to parse max_rows parameter - a positive integer is required"
 LOG_FAILED_PARSING_LIMIT = "Failed to parse limit parameter - a positive integer is required"
+LOG_FAILED_LOGANALYTICS_QUERY = "Failed request to query log analytics workspace"

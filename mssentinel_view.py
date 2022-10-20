@@ -17,7 +17,7 @@ def _get_ctx_result(result, provides):
     if provides == 'list incidents':
         ctx_result['data'] = data
     elif provides == 'get incident alerts':
-       ctx_result['data'] = data 
+       ctx_result['data'] = data
     elif provides == 'get incident entities':
         ctx_result['data'] = data
     elif provides == 'run query':
@@ -57,6 +57,7 @@ def get_incident_alerts(provides, all_app_runs, context):
 
     return 'mssentinel_get_incident_alerts.html'
 
+
 def get_incident_entities(provides, all_app_runs, context):
 
     context['results'] = results = []
@@ -69,6 +70,7 @@ def get_incident_entities(provides, all_app_runs, context):
             results.append(ctx_result)
 
     return 'mssentinel_get_incident_entities.html'
+
 
 def run_query(provides, all_app_runs, context):
 
