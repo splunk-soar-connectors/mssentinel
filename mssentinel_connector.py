@@ -235,6 +235,11 @@ class SentinelConnector(BaseConnector):
         if not "headers" in kwargs:
             kwargs["headers"] = {}
 
+        if not self._state.get(STATE_LOGANALYTICS_TOKEN_KEY):
+            status = self._generate_new_loganalytics_access_token(action_result=action_result)
+            if phantom.is_fail(status):
+               return action_result.get_status(), None
+
         access_token = self._state[STATE_LOGANALYTICS_TOKEN_KEY]
         kwargs["headers"]["Authorization"] = f"Bearer {access_token}"
 
@@ -356,7 +361,7 @@ class SentinelConnector(BaseConnector):
         endpoint = f"{self._api_url}{SENTINEL_API_INCIDENTS}"
 
         params = {
-            "$top": SENTINEL_API_INCIDENTS_PAGE_SIZE
+            "$top": limit
         }
 
         if filter:

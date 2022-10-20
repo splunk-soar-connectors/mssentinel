@@ -9,7 +9,6 @@ LOGANALYTICS_LOGIN_RESOURCE = "https://api.loganalytics.io"
 SENTINEL_API_URL = "https://management.azure.com/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.OperationalInsights/workspaces/{workspace_name}/providers/Microsoft.SecurityInsights"
 SENTINEL_API_VERSION = "2022-08-01"
 SENTINEL_API_INCIDENTS = "/incidents"
-SENTINEL_API_INCIDENTS_PAGE_SIZE = 50
 
 LOGANALYTICS_API_URL = "https://api.loganalytics.io/v1/workspaces/{workspace_id}/query"
 
