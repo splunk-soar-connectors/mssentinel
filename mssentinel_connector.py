@@ -271,7 +271,12 @@ class SentinelConnector(BaseConnector):
         if "headers" not in kwargs:
             kwargs["headers"] = {}
 
-        access_token = self._state[STATE_TOKEN_KEY]
+        access_token = self._state.get(STATE_TOKEN_KEY)
+        if not access_token:
+            status = self._generate_new_access_token(action_result=action_result)
+            if phantom.is_fail(status):
+                return action_result.get_status(), None
+ 
         kwargs["headers"]["Authorization"] = f"Bearer {access_token}"
 
         ret_val, resp_json = self._make_rest_call(endpoint, action_result, method, **kwargs)
