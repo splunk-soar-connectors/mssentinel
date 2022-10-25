@@ -10,7 +10,7 @@
     "python_version": "3",
     "product_version_regex": ".*",
     "publisher": "Splunk Community",
-    "license": "Copyright (c) Splunk Community, 2022",
+    "license": "Copyright (c) 2022 Splunk Inc.",
     "app_version": "1.0.0",
     "utctime_updated": "2022-04-30T14:52:08.552463Z",
     "package_name": "phantom_mssentinel",
@@ -111,7 +111,7 @@
             "action": "get incident",
             "identifier": "get_incident",
             "description": "Gets a given incident",
-            "type": "generic",
+            "type": "investigate",
             "read_only": true,
             "parameters": {
                 "incident_name": {
@@ -264,7 +264,7 @@
             "action": "get incident entities",
             "identifier": "get_incident_entities",
             "description": "Gets all entities for an incident",
-            "type": "generic",
+            "type": "investigate",
             "parameters": {
                 "incident_name": {
                     "description": "Incident Name",
@@ -337,7 +337,7 @@
             "action": "get incident alerts",
             "identifier": "get_incident_alerts",
             "description": "Gets all alerts for an incident",
-            "type": "generic",
+            "type": "investigate",
             "parameters": {
                 "incident_name": {
                     "description": "Incident Name",
@@ -471,7 +471,7 @@
                     "order": 1
                 }
             },
-            "type": "generic",
+            "type": "investigate",
             "read_only": true,
             "versions": "EQ(*)",
             "output": [
