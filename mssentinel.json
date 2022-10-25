@@ -848,7 +848,7 @@
                 "height": 5
             },
             "type": "generic",
-            "read_only": true,
+            "read_only": false,
             "versions": "EQ(*)"
         },
         {
@@ -944,7 +944,7 @@
                 }
             ],
             "type": "generic",
-            "read_only": true,
+            "read_only": false,
             "versions": "EQ(*)"
         },
         {
@@ -1026,7 +1026,7 @@
                 }
             ],
             "type": "generic",
-            "read_only": true,
+            "read_only": false,
             "versions": "EQ(*)",
             "render": {
                 "width": 12,
