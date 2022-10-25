@@ -1,4 +1,19 @@
-#!/usr/bin/python
+# File: mssentinel_connector.py
+#
+# Copyright (c) 2022 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under
+# the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the License for the specific language governing permissions
+# and limitations under the License.
+
+# !/usr/bin/python
 # -*- coding: utf-8 -*-
 # -----------------------------------------
 # Phantom sample App Connector python file
@@ -276,7 +291,7 @@ class SentinelConnector(BaseConnector):
             status = self._generate_new_access_token(action_result=action_result)
             if phantom.is_fail(status):
                 return action_result.get_status(), None
- 
+
         kwargs["headers"]["Authorization"] = f"Bearer {access_token}"
 
         ret_val, resp_json = self._make_rest_call(endpoint, action_result, method, **kwargs)
