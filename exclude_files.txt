@@ -1,0 +1,7 @@
+.git*
+.vscode
+app_log.html
+app_report.html
+app_test.xml
+rest.http
+actions_not_implemented.json

@@ -1,0 +1,105 @@
+## Authentication
+
+POST login.microsoftonline.com/{{tenant_id}}/oauth2/v2.0/token HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+client_id={{client_id}}
+&scope=https://management.azure.com/.default
+&client_secret={{client_secret}}
+&grant_type=client_credentials
+
+### Authentication Loganalytics
+POST login.microsoftonline.com/{{tenant_id}}/oauth2/token HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+client_id={{client_id}}
+&resource=https://api.loganalytics.io
+&client_secret={{client_secret}}
+&grant_type=client_credentials
+
+
+###  List Incidents
+
+GET https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents?api-version=2022-08-01
+Authorization: Bearer {{token}}
+
+### Get individual incident
+GET https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents/1662017910?api-version=2021-04-01
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Create Incident
+PUT https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents/{{$timestamp}}?api-version=2021-10-01
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "properties": {
+        "severity": "Informational",
+        "status": "New",
+        "title": "My incident from SOAR"
+    }
+}
+
+### Update Incident Status - need to get first and then push
+PUT https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents/1661855486?api-version=2021-10-01
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "properties": {
+        "severity": "Informational",
+        "status": "Active",
+        "title": "new title"
+    }
+}
+
+### Get comments for incident
+GET https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents/1661855486/comments?api-version=2021-04-01
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Get individual incident with last updated time eq to X
+GET https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents?api-version=2021-04-01&$filter=(properties/lastModifiedTimeUtc eq 2022-08-30T10:26:27.3710349Z)
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Get all incidents with last updated time ge than X
+GET https://management.azure.com/subscriptions/de582eca-4f28-4f8d-9ded-9b0cd2803739/resourceGroups/demomachine_group/providers/Microsoft.OperationalInsights/workspaces/customworkspace/providers/Microsoft.SecurityInsights/incidents?api-version=2021-04-01&$top=50&$filter=(properties/lastModifiedTimeUtc ge 2022-08-30T11:35:05Z)
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Paginated
+GET https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents?api-version=2021-04-01&$top=1
+Authorization: Bearer {{token}}
+
+
+### Update Status
+PUT https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents/1662017910?api-version=2021-10-01
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "properties": {
+        "title": "new title",
+        "severity": "Informational",
+        "status": "Active",
+    }
+}
+
+###
+POST https://management.azure.com/subscriptions/{{subscription_id}}/resourceGroups/{{resource_group}}/providers/Microsoft.OperationalInsights/workspaces/{{workspace_name}}/providers/Microsoft.SecurityInsights/incidents/1662017910/entities?api-version=2021-10-01
+Authorization: Bearer {{token}}
+
+
+### Query Log Analytics Workspace
+
+POST https://api.loganalytics.io/v1/workspaces/0eefde87-49fe-484a-b408-1d9225e1573d/query
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+        "maxRows": 1,
+        "query": "SecurityIncident | where TimeGenerated >= ago(60d)"
+}
