@@ -10,7 +10,7 @@
     "python_version": "3",
     "product_version_regex": ".*",
     "publisher": "Splunk",
-    "license": "Copyright (c) 2022 Splunk Inc.",
+    "license": "Copyright (c) 2022-2023 Splunk Inc.",
     "app_version": "1.0.1",
     "utctime_updated": "2022-04-30T14:52:08.552463Z",
     "package_name": "phantom_mssentinel",
@@ -146,10 +146,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.id",
-                    "data_type": "string",
-                    "example_values": [
-                        "/subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Incidents/4c153924-1e22-4q91-98ca-130e9a05aa70"
-                    ]
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.name",
@@ -201,9 +198,6 @@
                 {
                     "data_path": "action_result.data.*.properties.incidentUrl",
                     "data_type": "string",
-                    "example_values": [
-                        "https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Incidents/4c153924-1e22-4q91-98ca-130e9a05aa70"
-                    ],
                     "contains": [
                         "url"
                     ]
@@ -294,7 +288,7 @@
                     "column_name": "Type",
                     "column_order": 1,
                     "example_values": [
-                        "Microsoft.SecurityInsights/Incidents"
+                        "org/Incidents"
                     ]
                 },
                 {
@@ -370,10 +364,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.entities.*.id",
-                    "data_type": "string",
-                    "example_values": [
-                        "/subscriptions/4cXXX906-2XXX-4dXX-X8aa-1XXXXX85a37X/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Entities/47cfXXXX-3XX5-dXX7-XX43-XX55X5XX07"
-                    ]
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.entities.*.kind",
@@ -390,21 +381,21 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.entities.*.type",
+                    "data_path": "action_result.data.*.entities.*.properties.accountName",
                     "data_type": "string",
                     "example_values": [
-                        "Microsoft.SecurityInsights/Entities"
+                        "soar"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.entities.*.properties.url",
+                    "data_path": "action_result.data.*.entities.*.properties.additionalData.AvStatus",
                     "data_type": "string",
                     "example_values": [
-                        "testsite.com"
+                        "Updated"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.entities.*.properties.friendlyName",
+                    "data_path": "action_result.data.*.entities.*.properties.additionalData.DetonationFinalUrl",
                     "data_type": "string",
                     "example_values": [
                         "testurl.com"
@@ -418,80 +409,10 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.entities.*.properties.additionalData.DetonationFinalUrl",
-                    "data_type": "string",
-                    "example_values": [
-                        "testurl.com"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.entities.*.properties.address",
-                    "data_type": "string",
-                    "example_values": [
-                        "8.8.8.8"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.entities.*.properties.algorithm",
-                    "data_type": "string",
-                    "example_values": [
-                        "SHA1"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.entities.*.properties.hashValue",
-                    "data_type": "string",
-                    "example_values": [
-                        "246eb3d4119e21dc826049bbafeb6fc522ec044a"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.entities.*.properties.hostName",
-                    "data_type": "string",
-                    "example_values": [
-                        "winatpc2"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.entities.*.properties.osFamily",
-                    "data_type": "string",
-                    "example_values": [
-                        "Windows"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.entities.*.properties.osVersion",
-                    "data_type": "string",
-                    "example_values": [
-                        "22H2"
-                    ]
-                },
-                {
                     "data_path": "action_result.data.*.entities.*.properties.additionalData.FQDN",
                     "data_type": "string",
                     "example_values": [
                         "winatpc2"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.entities.*.properties.additionalData.AvStatus",
-                    "data_type": "string",
-                    "example_values": [
-                        "Updated"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.entities.*.properties.additionalData.LastSeen",
-                    "data_type": "string",
-                    "example_values": [
-                        "2023-05-23T05:13:58.4852087Z"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.entities.*.properties.additionalData.RiskScore",
-                    "data_type": "string",
-                    "example_values": [
-                        "High"
                     ]
                 },
                 {
@@ -502,10 +423,24 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.entities.*.properties.additionalData.LastExternalIpAddress",
+                    "data_type": "string",
+                    "example_values": [
+                        "8.8.8.8"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.entities.*.properties.additionalData.LastIpAddress",
                     "data_type": "string",
                     "example_values": [
                         "8.8.8.8"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.properties.additionalData.LastSeen",
+                    "data_type": "string",
+                    "example_values": [
+                        "2023-05-23T05:13:58.4852087Z"
                     ]
                 },
                 {
@@ -530,31 +465,74 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.entities.*.properties.additionalData.LastExternalIpAddress",
+                    "data_path": "action_result.data.*.entities.*.properties.additionalData.RiskScore",
+                    "data_type": "string",
+                    "example_values": [
+                        "High"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.properties.address",
                     "data_type": "string",
                     "example_values": [
                         "8.8.8.8"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.entities.*.properties.sid",
+                    "data_path": "action_result.data.*.entities.*.properties.algorithm",
                     "data_type": "string",
                     "example_values": [
-                        "S-1-5-21-2166771715-3910420897-2790973560-1001"
+                        "SHA1"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.entities.*.properties.ntDomain",
+                    "data_path": "action_result.data.*.entities.*.properties.commandLine",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.properties.creationTimeUtc",
                     "data_type": "string",
                     "example_values": [
-                        "WINATPC2"
+                        "2022-11-29T06:36:26.7483096Z"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.entities.*.properties.accountName",
+                    "data_path": "action_result.data.*.entities.*.properties.directory",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.properties.elevationToken",
                     "data_type": "string",
                     "example_values": [
-                        "soar"
+                        "Limited"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.properties.fileName",
+                    "data_type": "string",
+                    "example_values": [
+                        "chrome.exe"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.properties.friendlyName",
+                    "data_type": "string",
+                    "example_values": [
+                        "testurl.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.properties.hashValue",
+                    "data_type": "string",
+                    "example_values": [
+                        "b443xb3ds119e21dc8xxxx9bbafeb6fc522ec044a"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.properties.hostName",
+                    "data_type": "string",
+                    "example_values": [
+                        "winatpc2"
                     ]
                 },
                 {
@@ -566,6 +544,27 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.entities.*.properties.ntDomain",
+                    "data_type": "string",
+                    "example_values": [
+                        "WINATPC2"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.properties.osFamily",
+                    "data_type": "string",
+                    "example_values": [
+                        "Windows"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.entities.*.properties.osVersion",
+                    "data_type": "string",
+                    "example_values": [
+                        "22H2"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.entities.*.properties.processId",
                     "data_type": "string",
                     "example_values": [
@@ -573,35 +572,24 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.entities.*.properties.commandLine",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.entities.*.properties.elevationToken",
+                    "data_path": "action_result.data.*.entities.*.properties.sid",
                     "data_type": "string",
                     "example_values": [
-                        "Limited"
+                        "S-1-5-21-2166771715-3910420897-2790973560-1001"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.entities.*.properties.creationTimeUtc",
+                    "data_path": "action_result.data.*.entities.*.properties.url",
                     "data_type": "string",
                     "example_values": [
-                        "2022-11-29T06:36:26.7483096Z"
+                        "testsite.com"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.entities.*.properties.fileName",
+                    "data_path": "action_result.data.*.entities.*.type",
                     "data_type": "string",
                     "example_values": [
-                        "chrome.exe"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.entities.*.properties.directory",
-                    "data_type": "string",
-                    "example_values": [
-                        "C:\\Program Files\\Google\\Chrome\\Application"
+                        "org/Entities"
                     ]
                 },
                 {
@@ -685,6 +673,9 @@
                     "data_type": "string",
                     "example_values": [
                         "4c153924-1e22-4q91-98ca-130e9a05aa70"
+                    ],
+                    "contains": [
+                        "mssentinel incident name"
                     ]
                 },
                 {
@@ -692,66 +683,6 @@
                     "data_type": "string",
                     "contains": [
                         "mssentinel alert id"
-                    ],
-                    "example_values": [
-                        "/subscriptions/4cXXX906-2XXX-4dXX-X8aa-1XXXXX85a37X/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Entities/47cfXXXX-3XX5-dXX7-XX43-XX55X5XX07"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.properties.alertLink",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.properties.alertType",
-                    "data_type": "string",
-                    "example_values": [
-                        "4c153924-1e22-4q91-98ca-130e9a05aa70"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.properties.description",
-                    "data_type": "string",
-                    "example_values": [
-                        "Malware and unwanted software are undesirable applications that perform annoying, disruptive, or harmful actions on affected machines."
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.properties.productName",
-                    "data_type": "string",
-                    "example_values": [
-                        "Microsoft Defender Advanced Threat Protection"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.properties.additionalData.OriginalProductName",
-                    "data_type": "string",
-                    "example_values": [
-                        "Microsoft Defender Advanced Threat Protection"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.properties.additionalData.OriginalProductComponentName",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.properties.providerAlertId",
-                    "data_type": "string",
-                    "example_values": [
-                        "4c153924-1e22-4q91-98ca-130e9a05aa70_1"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.properties.resourceIdentifiers.*.type",
-                    "data_type": "string",
-                    "example_values": [
-                        "LogAnalytics"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.properties.resourceIdentifiers.*.workspaceId",
-                    "data_type": "string",
-                    "example_values": [
-                        "4c153924-1e22-4q91-98ca-130e9a05aa70"
                     ]
                 },
                 {
@@ -769,6 +700,14 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.properties.additionalData.OriginalProductComponentName",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.properties.additionalData.OriginalProductName",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.data.*.properties.alertDisplayName",
                     "data_type": "string",
                     "example_values": [
@@ -776,10 +715,28 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.properties.alertLink",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.properties.alertType",
+                    "data_type": "string",
+                    "example_values": [
+                        "4c153924-1e22-4q91-98ca-130e9a05aa70"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.properties.confidenceLevel",
                     "data_type": "string",
                     "example_values": [
                         "Unknown"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.properties.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "Malware and unwanted software are undesirable applications that perform annoying, disruptive, or harmful actions on affected machines."
                     ]
                 },
                 {
@@ -801,6 +758,31 @@
                     "data_type": "string",
                     "example_values": [
                         "2023-05-22T05:53:25.1335414Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.properties.productName",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.properties.providerAlertId",
+                    "data_type": "string",
+                    "example_values": [
+                        "4c153924-1e22-4q91-98ca-130e9a05aa70_1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.properties.resourceIdentifiers.*.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "LogAnalytics"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.properties.resourceIdentifiers.*.workspaceId",
+                    "data_type": "string",
+                    "example_values": [
+                        "4c153924-1e22-4q91-98ca-130e9a05aa70"
                     ]
                 },
                 {
@@ -840,16 +822,13 @@
                 },
                 {
                     "data_path": "action_result.data.*.properties.vendorName",
-                    "data_type": "string",
-                    "example_values": [
-                        "Microsoft"
-                    ]
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.type",
                     "data_type": "string",
                     "example_values": [
-                        "Microsoft.SecurityInsights/Entities"
+                        "org/Entities"
                     ]
                 },
                 {
@@ -909,6 +888,14 @@
             "versions": "EQ(*)",
             "output": [
                 {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
                     "data_path": "action_result.parameter.filter",
                     "data_type": "string",
                     "example_values": [
@@ -931,10 +918,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.id",
-                    "data_type": "string",
-                    "example_values": [
-                        "/subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Incidents/4c153924-1e22-4q91-98ca-130e9a05aa70"
-                    ]
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.name",
@@ -945,6 +929,10 @@
                     "example_values": [
                         "4c153924-1e22-4q91-98ca-130e9a05aa70"
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.properties.additionalData.alertProductNames",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.properties.additionalData.alertsCount",
@@ -968,10 +956,31 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.properties.additionalData.tactics",
+                    "data_type": "string",
+                    "example_values": [
+                        "InitialAccess"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.properties.createdTimeUtc",
                     "data_type": "string",
                     "example_values": [
                         "2023-05-23T11:50:19.7705938Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.properties.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "Incident generated"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.properties.firstActivityTimeUtc",
+                    "data_type": "string",
+                    "example_values": [
+                        "2023-05-22T11:45:27.946Z"
                     ]
                 },
                 {
@@ -984,9 +993,6 @@
                 {
                     "data_path": "action_result.data.*.properties.incidentUrl",
                     "data_type": "string",
-                    "example_values": [
-                        "https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Incidents/4c153924-1e22-4q91-98ca-130e9a05aa70"
-                    ],
                     "contains": [
                         "url"
                     ]
@@ -1003,6 +1009,13 @@
                     "data_type": "string",
                     "example_values": [
                         "User"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.properties.lastActivityTimeUtc",
+                    "data_type": "string",
+                    "example_values": [
+                        "2023-05-23T11:45:14.698Z"
                     ]
                 },
                 {
@@ -1023,7 +1036,7 @@
                     "data_path": "action_result.data.*.properties.owner.email",
                     "data_type": "string",
                     "example_values": [
-                        "testuser@onmicrosoft.com"
+                        "testuser@gmail.com"
                     ],
                     "contains": [
                         "email"
@@ -1045,6 +1058,10 @@
                     "contains": [
                         "email"
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.properties.relatedAnalyticRuleIds",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.properties.severity",
@@ -1071,7 +1088,7 @@
                     "data_path": "action_result.data.*.type",
                     "data_type": "string",
                     "example_values": [
-                        "Microsoft.SecurityInsights/Incidents"
+                        "org/Incidents"
                     ]
                 },
                 {
@@ -1100,48 +1117,6 @@
                     "data_type": "numeric",
                     "example_values": [
                         1
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.properties.description",
-                    "data_type": "string",
-                    "example_values": [
-                        "Incident generated"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.properties.additionalData.tactics",
-                    "data_type": "string",
-                    "example_values": [
-                        "InitialAccess"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.properties.additionalData.alertProductNames",
-                    "data_type": "string",
-                    "example_values": [
-                        "Microsoft Defender Advanced Threat Protection"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.properties.lastActivityTimeUtc",
-                    "data_type": "string",
-                    "example_values": [
-                        "2023-05-23T11:45:14.698Z"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.properties.firstActivityTimeUtc",
-                    "data_type": "string",
-                    "example_values": [
-                        "2023-05-22T11:45:27.946Z"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.properties.relatedAnalyticRuleIds",
-                    "data_type": "string",
-                    "example_values": [
-                        "/subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/alertRules/4c153924-1e22-4q91-98ca-130e9a05aa70"
                     ]
                 }
             ],
@@ -1273,6 +1248,16 @@
                     "data_type": "string",
                     "example_values": [
                         "4c153924-1e22-4q91-98ca-130e9a05aa70"
+                    ],
+                    "contains": [
+                        "mssentinel incident name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.labels",
+                    "data_type": "string",
+                    "example_values": [
+                        "Tag1"
                     ]
                 },
                 {
@@ -1309,10 +1294,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.id",
-                    "data_type": "string",
-                    "example_values": [
-                        "/subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Incidents/4c153924-1e22-4q91-98ca-130e9a05aa70"
-                    ]
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.name",
@@ -1355,6 +1337,13 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.properties.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "Incident for test alerts"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.properties.incidentNumber",
                     "data_type": "numeric",
                     "example_values": [
@@ -1364,9 +1353,6 @@
                 {
                     "data_path": "action_result.data.*.properties.incidentUrl",
                     "data_type": "string",
-                    "example_values": [
-                        "https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Incidents/4c153924-1e22-4q91-98ca-130e9a05aa70"
-                    ],
                     "contains": [
                         "url"
                     ]
@@ -1444,7 +1430,7 @@
                     "data_path": "action_result.data.*.properties.title",
                     "data_type": "string",
                     "example_values": [
-                        "AP New Updated Incident"
+                        "New Updated Incident"
                     ]
                 },
                 {
@@ -1453,7 +1439,7 @@
                     "column_order": 1,
                     "column_name": "Type",
                     "example_values": [
-                        "Microsoft.SecurityInsights/Incidents"
+                        "org/Incidents"
                     ]
                 },
                 {
@@ -1489,20 +1475,6 @@
                     "data_type": "numeric",
                     "example_values": [
                         1
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.properties.description",
-                    "data_type": "string",
-                    "example_values": [
-                        "Incident for test alerts"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.labels",
-                    "data_type": "string",
-                    "example_values": [
-                        "Tag1"
                     ]
                 }
             ],
@@ -1551,6 +1523,9 @@
                     "column_order": 0,
                     "example_values": [
                         "4c153924-1e22-4q91-98ca-130e9a05aa70"
+                    ],
+                    "contains": [
+                        "mssentinel incident name"
                     ]
                 },
                 {
@@ -1561,24 +1536,21 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.id",
+                    "data_path": "action_result.data.*.etag",
                     "data_type": "string",
                     "example_values": [
-                        "/subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Incidents/4c153924-1e22-4q91-98ca-130e9a05aa70/Comments/1684833925"
+                        "\"4c153924-1e22-4q91-98ca-130e9a05aa70\""
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.name",
                     "data_type": "string",
                     "example_values": [
                         "1684833925"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.type",
-                    "data_type": "string",
-                    "example_values": [
-                        "Microsoft.SecurityInsights/Incidents/Comments"
                     ]
                 },
                 {
@@ -1626,7 +1598,7 @@
                     "data_path": "action_result.data.*.properties.lastModifiedTimeUtc",
                     "data_type": "string",
                     "column_name": "Last Modified Time",
-                    "column_order": 3,
+                    "column_order": 2,
                     "example_values": [
                         "2023-05-23T09:25:25.7863587Z"
                     ]
@@ -1638,6 +1610,13 @@
                     "column_order": 1,
                     "example_values": [
                         "Update Owner and status"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "org/Incidents/Comments"
                     ]
                 },
                 {
@@ -1663,13 +1642,6 @@
                     "data_type": "numeric",
                     "example_values": [
                         1
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.etag",
-                    "data_type": "string",
-                    "example_values": [
-                        "\"4c153924-1e22-4q91-98ca-130e9a05aa70\""
                     ]
                 }
             ],
@@ -1718,8 +1690,29 @@
                     "data_type": "string"
                 },
                 {
+                    "data_path": "action_result.data.*.SentinelTableName",
+                    "data_type": "string",
+                    "example_values": [
+                        "PrimaryResult"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.TimeGenerated",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.Title",
+                    "data_type": "string",
+                    "example_values": [
+                        "Suspicious activity found by incident on multiple endpoints"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.count_",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.total_rows",
@@ -1748,27 +1741,6 @@
                     "example_values": [
                         1
                     ]
-                },
-                {
-                    "data_path": "action_result.data.*.Title",
-                    "data_type": "string",
-                    "example_values": [
-                        "Suspicious activity found by incident on multiple endpoints"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.count_",
-                    "data_type": "numeric",
-                    "example_values": [
-                        5
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.SentinelTableName",
-                    "data_type": "string",
-                    "example_values": [
-                        "PrimaryResult"
-                    ]
                 }
             ],
             "versions": "EQ(*)",
@@ -1785,7 +1757,7 @@
             },
             {
                 "module": "certifi",
-                "input_file": "wheels/py3/certifi-2022.9.24-py3-none-any.whl"
+                "input_file": "wheels/py3/certifi-2023.5.7-py3-none-any.whl"
             },
             {
                 "module": "chardet",
@@ -1805,7 +1777,39 @@
             },
             {
                 "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.12-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/urllib3-1.26.16-py2.py3-none-any.whl"
+            }
+        ]
+    },
+    "pip39_dependencies": {
+        "wheel": [
+            {
+                "module": "beautifulsoup4",
+                "input_file": "wheels/py3/beautifulsoup4-4.9.1-py3-none-any.whl"
+            },
+            {
+                "module": "certifi",
+                "input_file": "wheels/py3/certifi-2023.5.7-py3-none-any.whl"
+            },
+            {
+                "module": "chardet",
+                "input_file": "wheels/shared/chardet-3.0.4-py2.py3-none-any.whl"
+            },
+            {
+                "module": "idna",
+                "input_file": "wheels/shared/idna-2.10-py2.py3-none-any.whl"
+            },
+            {
+                "module": "requests",
+                "input_file": "wheels/shared/requests-2.25.0-py2.py3-none-any.whl"
+            },
+            {
+                "module": "soupsieve",
+                "input_file": "wheels/py3/soupsieve-2.4.1-py3-none-any.whl"
+            },
+            {
+                "module": "urllib3",
+                "input_file": "wheels/shared/urllib3-1.26.16-py2.py3-none-any.whl"
             }
         ]
     }

@@ -1,6 +1,6 @@
 # File: mssentinel_connector.py
 #
-# Copyright (c) 2022 Splunk Inc.
+# Copyright (c) 2022-2023 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ from __future__ import print_function, unicode_literals
 import json
 import time
 from datetime import datetime, timedelta
-from urllib.parse import urlparse, quote, urljoin
+from urllib.parse import quote, urljoin, urlparse
 
 # Phantom App imports
 import phantom.app as phantom
@@ -26,9 +26,9 @@ import requests
 from bs4 import BeautifulSoup
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
-from request_handler import RequestUtilHandler
 
 import mssentinel_consts as consts
+from request_handler import RequestUtilHandler
 
 
 class RetVal(tuple):
@@ -272,7 +272,7 @@ class SentinelConnector(BaseConnector):
                 return action_result.set_status(phantom.APP_ERROR, consts.MS_SENTINEL_UTC_SINCE_TIME_ERROR)
             # Checking future date
             if curr_time >= end_time:
-                msg = consts.MS_SENTINEL_GREATER_EQUAL_TIME_ERR.format(consts.MS_SENTINEL_CONFIG_TIME_POLL_NOW)
+                msg = consts.MS_SENTINEL_GREATER_EQUAL_TIME_ERROR.format(consts.MS_SENTINEL_CONFIG_TIME_POLL_NOW)
                 return action_result.set_status(phantom.APP_ERROR, msg)
         except Exception as e:
             message = consts.MS_SENTINEL_INVALID_DATE_FORMAT.format(self._get_error_message_from_exception(e))
@@ -605,7 +605,7 @@ class SentinelConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         limit = consts.MAX_INCIDENTS_DEFAULT
         if param.get("limit"):
-            ret_val, limit = self._validate_integer(action_result, param["limit"], "limit")
+            ret_val, limit = self._validate_integer(action_result, param.get("limit"), "limit")
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()

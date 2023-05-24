@@ -1,6 +1,6 @@
 # File: mssentinel_consts.py
 #
-# Copyright (c) 2022 Splunk Inc.
+# Copyright (c) 2022-2023 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -80,11 +80,10 @@ MS_SENTINEL_STATE_FILE_CORRUPT_ERROR = "Error occurred while loading the state f
     "Resetting the state file with the default format. Please run the test connectivity."
 
 MS_SENTINEL_UTC_SINCE_TIME_ERROR = "Please provide time in the span of UTC time since Unix epoch 1970-01-01T00:00:00Z."
-MS_SENTINEL_GREATER_EQUAL_TIME_ERR = 'Invalid {0}, can not be greater than or equal to current UTC time'
+MS_SENTINEL_GREATER_EQUAL_TIME_ERROR = 'Invalid {0}, can not be greater than or equal to current UTC time'
 MS_SENTINEL_CONFIG_TIME_POLL_NOW = "'Time range for POLL NOW' or 'Start Time for Schedule/Manual POLL' asset configuration parameter"
 MS_SENTINEL_INVALID_DATE_FORMAT = "Invalid date string received. Error occurred while checking date format. Error: {}"
 MS_SENTINEL_NO_LAST_MODIFIED_TIME = "Could not extract lastModifiedTimeUtc from latest ingested incident."
-MS_SENTINEL_ERROR_MSG_UNKNOWN = "Unknown error occurred. Please check the asset configuration and|or action parameters."
 MS_SENTINEL_STATE_FILE_ERROR = "Unexpected details retrieved from the state file. please run the test connectivity"
 MS_SENTINEL_DUPLICATE_CONTAINER_MESSAGE = "Duplicate container found"
 MS_SENTINEL_CONTAINER_ERROR_MESSAGE = "Error occurred while saving the container: ID {}: {}"
