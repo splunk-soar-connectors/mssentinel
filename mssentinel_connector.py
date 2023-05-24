@@ -272,8 +272,8 @@ class SentinelConnector(BaseConnector):
                 return action_result.set_status(phantom.APP_ERROR, consts.MS_SENTINEL_UTC_SINCE_TIME_ERROR)
             # Checking future date
             if curr_time >= end_time:
-                msg = consts.MS_SENTINEL_GREATER_EQUAL_TIME_ERROR.format(consts.MS_SENTINEL_CONFIG_TIME_POLL_NOW)
-                return action_result.set_status(phantom.APP_ERROR, msg)
+                message = consts.MS_SENTINEL_GREATER_EQUAL_TIME_ERROR.format(consts.MS_SENTINEL_CONFIG_TIME_POLL_NOW)
+                return action_result.set_status(phantom.APP_ERROR, message)
         except Exception as e:
             message = consts.MS_SENTINEL_INVALID_DATE_FORMAT.format(self._get_error_message_from_exception(e))
             return action_result.set_status(phantom.APP_ERROR, message)
@@ -405,8 +405,8 @@ class SentinelConnector(BaseConnector):
         kwargs["headers"]["Authorization"] = f"Bearer {self._loganalytic_token}"
         ret_val, resp_json = self._make_rest_call(endpoint, action_result, method, **kwargs)
 
-        msg = action_result.get_message()
-        if msg and any(failure_message in msg for failure_message in consts.MS_SENTINEL_TOKEN_EXPIRED_MSG):
+        message = action_result.get_message()
+        if message and any(failure_message in message for failure_message in consts.MS_SENTINEL_TOKEN_EXPIRED_MESSAGE):
             self.debug_print("Token is invalid/expired. Hence, generating a new token.")
             ret_val = self._generate_new_loganalytics_access_token(action_result=action_result)
             if phantom.is_fail(ret_val):
@@ -443,8 +443,8 @@ class SentinelConnector(BaseConnector):
         ret_val, resp_json = self._make_rest_call(endpoint, action_result, method, **kwargs)
 
         # If token is expired, generate a new token
-        msg = action_result.get_message()
-        if msg and any(failure_message in msg for failure_message in consts.MS_SENTINEL_TOKEN_EXPIRED_MSG):
+        message = action_result.get_message()
+        if message and any(failure_message in message for failure_message in consts.MS_SENTINEL_TOKEN_EXPIRED_MESSAGE):
             self.debug_print("Token is invalid/expired. Hence, generating a new token.")
             ret_val = self._generate_new_access_token(action_result)
             if phantom.is_fail(ret_val):

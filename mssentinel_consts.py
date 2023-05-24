@@ -88,7 +88,7 @@ MS_SENTINEL_STATE_FILE_ERROR = "Unexpected details retrieved from the state file
 MS_SENTINEL_DUPLICATE_CONTAINER_MESSAGE = "Duplicate container found"
 MS_SENTINEL_CONTAINER_ERROR_MESSAGE = "Error occurred while saving the container: ID {}: {}"
 MS_SENTINEL_ARTIFACT_ERROR_MESSAGE = "Error occurred while saving the artifact(s): {}"
-MS_SENTINEL_TOKEN_EXPIRED_MSG = [
+MS_SENTINEL_TOKEN_EXPIRED_MESSAGE = [
     "token is invalid",
     "token has expired",
     "ExpiredAuthenticationToken",
