@@ -10,8 +10,8 @@ Minimum Product Version: 6.0.0
 
 This app provides integration with Microsoft Sentinel
 
-[comment]: # " File: README.md"
-[comment]: # "  Copyright (c) 2022 Splunk Inc."
+[comment]: # "File: README.md"
+[comment]: # "Copyright (c) 2022-2023 Splunk Inc."
 [comment]: # ""
 [comment]: # "Licensed under the Apache License, Version 2.0 (the 'License');"
 [comment]: # "you may not use this file except in compliance with the License."
@@ -207,14 +207,14 @@ DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 action_result.status | string |  |   success  failed 
 action_result.parameter.incident_name | string |  `mssentinel incident name`  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
 action_result.data.\*.etag | string |  |   "4c153924-1e22-4q91-98ca-130e9a05aa70" 
-action_result.data.\*.id | string |  |   /subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Incidents/4c153924-1e22-4q91-98ca-130e9a05aa70 
+action_result.data.\*.id | string |  |  
 action_result.data.\*.name | string |  `mssentinel incident name`  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
 action_result.data.\*.properties.additionalData.alertsCount | numeric |  |   1 
 action_result.data.\*.properties.additionalData.bookmarksCount | numeric |  |   1 
 action_result.data.\*.properties.additionalData.commentsCount | numeric |  |   6 
 action_result.data.\*.properties.createdTimeUtc | string |  |   2023-05-12T10:17:19.7020255Z 
 action_result.data.\*.properties.incidentNumber | numeric |  |   28 
-action_result.data.\*.properties.incidentUrl | string |  `url`  |   https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Incidents/4c153924-1e22-4q91-98ca-130e9a05aa70 
+action_result.data.\*.properties.incidentUrl | string |  `url`  |  
 action_result.data.\*.properties.labels.\*.labelName | string |  |   Malicious 
 action_result.data.\*.properties.labels.\*.labelType | string |  |   User 
 action_result.data.\*.properties.lastModifiedTimeUtc | string |  |   2023-05-23T09:25:25.8130741Z 
@@ -225,7 +225,7 @@ action_result.data.\*.properties.owner.userPrincipalName | string |  `email`  | 
 action_result.data.\*.properties.severity | string |  |   High 
 action_result.data.\*.properties.status | string |  |   Active 
 action_result.data.\*.properties.title | string |  |   Incident Rule 
-action_result.data.\*.type | string |  |   Microsoft.SecurityInsights/Incidents 
+action_result.data.\*.type | string |  |   org/Incidents 
 action_result.summary.incident_id | string |  `mssentinel incident id`  |  
 action_result.message | string |  |   Successfully retrieved incident details 
 summary.total_objects | numeric |  |   1 
@@ -247,40 +247,40 @@ DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
 action_result.status | string |  |   success  failed 
 action_result.parameter.incident_name | string |  `mssentinel incident name`  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
-action_result.data.\*.entities.\*.id | string |  |   /subscriptions/4cXXX906-2XXX-4dXX-X8aa-1XXXXX85a37X/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Entities/47cfXXXX-3XX5-dXX7-XX43-XX55X5XX07 
+action_result.data.\*.entities.\*.id | string |  |  
 action_result.data.\*.entities.\*.kind | string |  |   Url 
 action_result.data.\*.entities.\*.name | string |  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
-action_result.data.\*.entities.\*.type | string |  |   Microsoft.SecurityInsights/Entities 
-action_result.data.\*.entities.\*.properties.url | string |  |   testsite.com 
-action_result.data.\*.entities.\*.properties.friendlyName | string |  |   testurl.com 
-action_result.data.\*.entities.\*.properties.additionalData.DetonationVerdict | string |  |   GOOD 
-action_result.data.\*.entities.\*.properties.additionalData.DetonationFinalUrl | string |  |   testurl.com 
-action_result.data.\*.entities.\*.properties.address | string |  |   8.8.8.8 
-action_result.data.\*.entities.\*.properties.algorithm | string |  |   SHA1 
-action_result.data.\*.entities.\*.properties.hashValue | string |  |   246eb3d4119e21dc826049bbafeb6fc522ec044a 
-action_result.data.\*.entities.\*.properties.hostName | string |  |   winatpc2 
-action_result.data.\*.entities.\*.properties.osFamily | string |  |   Windows 
-action_result.data.\*.entities.\*.properties.osVersion | string |  |   22H2 
-action_result.data.\*.entities.\*.properties.additionalData.FQDN | string |  |   winatpc2 
+action_result.data.\*.entities.\*.properties.accountName | string |  |   soar 
 action_result.data.\*.entities.\*.properties.additionalData.AvStatus | string |  |   Updated 
-action_result.data.\*.entities.\*.properties.additionalData.LastSeen | string |  |   2023-05-23T05:13:58.4852087Z 
-action_result.data.\*.entities.\*.properties.additionalData.RiskScore | string |  |   High 
+action_result.data.\*.entities.\*.properties.additionalData.DetonationFinalUrl | string |  |   testurl.com 
+action_result.data.\*.entities.\*.properties.additionalData.DetonationVerdict | string |  |   GOOD 
+action_result.data.\*.entities.\*.properties.additionalData.FQDN | string |  |   winatpc2 
 action_result.data.\*.entities.\*.properties.additionalData.HealthStatus | string |  |   Active 
+action_result.data.\*.entities.\*.properties.additionalData.LastExternalIpAddress | string |  |   8.8.8.8 
 action_result.data.\*.entities.\*.properties.additionalData.LastIpAddress | string |  |   8.8.8.8 
+action_result.data.\*.entities.\*.properties.additionalData.LastSeen | string |  |   2023-05-23T05:13:58.4852087Z 
 action_result.data.\*.entities.\*.properties.additionalData.LoggedOnUsers | string |  |   [{"AccountName":"soar","DomainName":"WINATPC2"}] 
 action_result.data.\*.entities.\*.properties.additionalData.MdatpDeviceId | string |  |   73a08e353cvf0294f733b7b6e9499439e433a1caf 
 action_result.data.\*.entities.\*.properties.additionalData.OnboardingStatus | string |  |   Onboarded 
-action_result.data.\*.entities.\*.properties.additionalData.LastExternalIpAddress | string |  |   8.8.8.8 
-action_result.data.\*.entities.\*.properties.sid | string |  |   S-1-5-21-2166771715-3910420897-2790973560-1001 
-action_result.data.\*.entities.\*.properties.ntDomain | string |  |   WINATPC2 
-action_result.data.\*.entities.\*.properties.accountName | string |  |   soar 
-action_result.data.\*.entities.\*.properties.isDomainJoined | boolean |  |   True  False 
-action_result.data.\*.entities.\*.properties.processId | string |  |   9644 
+action_result.data.\*.entities.\*.properties.additionalData.RiskScore | string |  |   High 
+action_result.data.\*.entities.\*.properties.address | string |  |   8.8.8.8 
+action_result.data.\*.entities.\*.properties.algorithm | string |  |   SHA1 
 action_result.data.\*.entities.\*.properties.commandLine | string |  |  
-action_result.data.\*.entities.\*.properties.elevationToken | string |  |   Limited 
 action_result.data.\*.entities.\*.properties.creationTimeUtc | string |  |   2022-11-29T06:36:26.7483096Z 
+action_result.data.\*.entities.\*.properties.directory | string |  |  
+action_result.data.\*.entities.\*.properties.elevationToken | string |  |   Limited 
 action_result.data.\*.entities.\*.properties.fileName | string |  |   chrome.exe 
-action_result.data.\*.entities.\*.properties.directory | string |  |   C:\\Program Files\\Google\\Chrome\\Application 
+action_result.data.\*.entities.\*.properties.friendlyName | string |  |   testurl.com 
+action_result.data.\*.entities.\*.properties.hashValue | string |  |   b443xb3ds119e21dc8xxxx9bbafeb6fc522ec044a 
+action_result.data.\*.entities.\*.properties.hostName | string |  |   winatpc2 
+action_result.data.\*.entities.\*.properties.isDomainJoined | boolean |  |   True  False 
+action_result.data.\*.entities.\*.properties.ntDomain | string |  |   WINATPC2 
+action_result.data.\*.entities.\*.properties.osFamily | string |  |   Windows 
+action_result.data.\*.entities.\*.properties.osVersion | string |  |   22H2 
+action_result.data.\*.entities.\*.properties.processId | string |  |   9644 
+action_result.data.\*.entities.\*.properties.sid | string |  |   S-1-5-21-2166771715-3910420897-2790973560-1001 
+action_result.data.\*.entities.\*.properties.url | string |  |   testsite.com 
+action_result.data.\*.entities.\*.type | string |  |   org/Entities 
 action_result.data.\*.metaData.\*.count | numeric |  |   2 
 action_result.data.\*.metaData.\*.entityKind | string |  |   Url 
 action_result.summary.total_entities | numeric |  |   1 
@@ -303,31 +303,31 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
 action_result.status | string |  |   success  failed 
-action_result.parameter.incident_name | string |  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
-action_result.data.\*.id | string |  `mssentinel alert id`  |   /subscriptions/4cXXX906-2XXX-4dXX-X8aa-1XXXXX85a37X/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Entities/47cfXXXX-3XX5-dXX7-XX43-XX55X5XX07 
-action_result.data.\*.properties.alertLink | string |  |  
-action_result.data.\*.properties.alertType | string |  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
-action_result.data.\*.properties.description | string |  |   Malware and unwanted software are undesirable applications that perform annoying, disruptive, or harmful actions on affected machines. 
-action_result.data.\*.properties.productName | string |  |   Microsoft Defender Advanced Threat Protection 
-action_result.data.\*.properties.additionalData.OriginalProductName | string |  |   Microsoft Defender Advanced Threat Protection 
-action_result.data.\*.properties.additionalData.OriginalProductComponentName | string |  |  
-action_result.data.\*.properties.providerAlertId | string |  |   4c153924-1e22-4q91-98ca-130e9a05aa70_1 
-action_result.data.\*.properties.resourceIdentifiers.\*.type | string |  |   LogAnalytics 
-action_result.data.\*.properties.resourceIdentifiers.\*.workspaceId | string |  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
+action_result.parameter.incident_name | string |  `mssentinel incident name`  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
+action_result.data.\*.id | string |  `mssentinel alert id`  |  
 action_result.data.\*.kind | string |  |   SecurityAlert 
 action_result.data.\*.name | string |  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
+action_result.data.\*.properties.additionalData.OriginalProductComponentName | string |  |  
+action_result.data.\*.properties.additionalData.OriginalProductName | string |  |  
 action_result.data.\*.properties.alertDisplayName | string |  |   An active malware process was detected while executing 
+action_result.data.\*.properties.alertLink | string |  |  
+action_result.data.\*.properties.alertType | string |  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
 action_result.data.\*.properties.confidenceLevel | string |  |   Unknown 
+action_result.data.\*.properties.description | string |  |   Malware and unwanted software are undesirable applications that perform annoying, disruptive, or harmful actions on affected machines. 
 action_result.data.\*.properties.endTimeUtc | string |  |   2023-05-22T05:53:25.1335414Z 
 action_result.data.\*.properties.friendlyName | string |  |   An active malware process was detected while executing 
 action_result.data.\*.properties.processingEndTime | string |  |   2023-05-22T05:53:25.1335414Z 
+action_result.data.\*.properties.productName | string |  |  
+action_result.data.\*.properties.providerAlertId | string |  |   4c153924-1e22-4q91-98ca-130e9a05aa70_1 
+action_result.data.\*.properties.resourceIdentifiers.\*.type | string |  |   LogAnalytics 
+action_result.data.\*.properties.resourceIdentifiers.\*.workspaceId | string |  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
 action_result.data.\*.properties.severity | string |  |   Low 
 action_result.data.\*.properties.startTimeUtc | string |  |   2023-05-22T05:53:25.1335414Z 
 action_result.data.\*.properties.status | string |  |   New 
 action_result.data.\*.properties.systemAlertId | string |  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
 action_result.data.\*.properties.timeGenerated | string |  |   2023-05-22T05:53:25.1335414Z 
-action_result.data.\*.properties.vendorName | string |  |   Microsoft 
-action_result.data.\*.type | string |  |   Microsoft.SecurityInsights/Entities 
+action_result.data.\*.properties.vendorName | string |  |  
+action_result.data.\*.type | string |  |   org/Entities 
 action_result.summary.total_alerts | numeric |  |   1 
 action_result.message | string |  |   Total Alerts: 1 
 summary.total_objects | numeric |  |   1 
@@ -348,38 +348,39 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 #### Action Output
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
+action_result.status | string |  |   success  failed 
 action_result.parameter.filter | string |  |   (properties/lastModifiedTimeUtc ge 2023-05-22T10:09:26Z) 
 action_result.parameter.limit | numeric |  |   100 
 action_result.data.\*.etag | string |  |   "4c153924-1e22-4q91-98ca-130e9a05aa70" 
-action_result.data.\*.id | string |  |   /subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Incidents/4c153924-1e22-4q91-98ca-130e9a05aa70 
+action_result.data.\*.id | string |  |  
 action_result.data.\*.name | string |  `mssentinel incident id`  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
+action_result.data.\*.properties.additionalData.alertProductNames | string |  |  
 action_result.data.\*.properties.additionalData.alertsCount | numeric |  |   1 
 action_result.data.\*.properties.additionalData.bookmarksCount | numeric |  |   3 
 action_result.data.\*.properties.additionalData.commentsCount | numeric |  |   1 
+action_result.data.\*.properties.additionalData.tactics | string |  |   InitialAccess 
 action_result.data.\*.properties.createdTimeUtc | string |  |   2023-05-23T11:50:19.7705938Z 
+action_result.data.\*.properties.description | string |  |   Incident generated 
+action_result.data.\*.properties.firstActivityTimeUtc | string |  |   2023-05-22T11:45:27.946Z 
 action_result.data.\*.properties.incidentNumber | numeric |  |   54 
-action_result.data.\*.properties.incidentUrl | string |  `url`  |   https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Incidents/4c153924-1e22-4q91-98ca-130e9a05aa70 
+action_result.data.\*.properties.incidentUrl | string |  `url`  |  
 action_result.data.\*.properties.labels.\*.labelName | string |  |   Incident 
 action_result.data.\*.properties.labels.\*.labelType | string |  |   User 
+action_result.data.\*.properties.lastActivityTimeUtc | string |  |   2023-05-23T11:45:14.698Z 
 action_result.data.\*.properties.lastModifiedTimeUtc | string |  |   2023-05-23T12:10:26.6664241Z 
 action_result.data.\*.properties.owner.assignedTo | string |  |   Test User 
-action_result.data.\*.properties.owner.email | string |  `email`  |   testuser@onmicrosoft.com 
+action_result.data.\*.properties.owner.email | string |  `email`  |   testuser@gmail.com 
 action_result.data.\*.properties.owner.objectId | string |  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
 action_result.data.\*.properties.owner.userPrincipalName | string |  `email`  |   testuser@gmail.com 
+action_result.data.\*.properties.relatedAnalyticRuleIds | string |  |  
 action_result.data.\*.properties.severity | string |  |   Medium 
 action_result.data.\*.properties.status | string |  |   New 
 action_result.data.\*.properties.title | string |  |   IncidentRule2 
-action_result.data.\*.type | string |  |   Microsoft.SecurityInsights/Incidents 
+action_result.data.\*.type | string |  |   org/Incidents 
 action_result.summary.total_incidents | numeric |  |   5 
 action_result.message | string |  |   Total incidents: 5 
 summary.total_objects | numeric |  |   1 
-summary.total_objects_successful | numeric |  |   1 
-action_result.data.\*.properties.description | string |  |   Incident generated 
-action_result.data.\*.properties.additionalData.tactics | string |  |   InitialAccess 
-action_result.data.\*.properties.additionalData.alertProductNames | string |  |   Microsoft Defender Advanced Threat Protection 
-action_result.data.\*.properties.lastActivityTimeUtc | string |  |   2023-05-23T11:45:14.698Z 
-action_result.data.\*.properties.firstActivityTimeUtc | string |  |   2023-05-22T11:45:27.946Z 
-action_result.data.\*.properties.relatedAnalyticRuleIds | string |  |   /subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/alertRules/4c153924-1e22-4q91-98ca-130e9a05aa70   
+summary.total_objects_successful | numeric |  |   1   
 
 ## action: 'update incident'
 Updates an existing incident
@@ -409,20 +410,22 @@ action_result.parameter.classification | string |  |
 action_result.parameter.classification_comment | string |  |  
 action_result.parameter.classification_reason | string |  |  
 action_result.parameter.description | string |  |   Incidents for updation 
-action_result.parameter.incident_name | string |  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
+action_result.parameter.incident_name | string |  `mssentinel incident name`  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
+action_result.parameter.labels | string |  |   Tag1 
 action_result.parameter.owner_upn | string |  |  
 action_result.parameter.severity | string |  |   Medium 
 action_result.parameter.status | string |  |   New 
 action_result.parameter.title | string |  |   New Updated Incident 
 action_result.data.\*.etag | string |  |   "4c153924-1e22-4q91-98ca-130e9a05aa70" 
-action_result.data.\*.id | string |  |   /subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Incidents/4c153924-1e22-4q91-98ca-130e9a05aa70 
+action_result.data.\*.id | string |  |  
 action_result.data.\*.name | string |  `mssentinel incident name`  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
 action_result.data.\*.properties.additionalData.alertsCount | numeric |  |   0 
 action_result.data.\*.properties.additionalData.bookmarksCount | numeric |  |   0 
 action_result.data.\*.properties.additionalData.commentsCount | numeric |  |   6 
 action_result.data.\*.properties.createdTimeUtc | string |  |   2023-05-12T10:17:19.7020255Z 
+action_result.data.\*.properties.description | string |  |   Incident for test alerts 
 action_result.data.\*.properties.incidentNumber | numeric |  |   28 
-action_result.data.\*.properties.incidentUrl | string |  `url`  |   https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Incidents/4c153924-1e22-4q91-98ca-130e9a05aa70 
+action_result.data.\*.properties.incidentUrl | string |  `url`  |  
 action_result.data.\*.properties.labels.\*.labelName | string |  |   Malicious 
 action_result.data.\*.properties.labels.\*.labelType | string |  |   User 
 action_result.data.\*.properties.lastModifiedTimeUtc | string |  |   2023-05-23T10:11:17.8367091Z 
@@ -432,15 +435,13 @@ action_result.data.\*.properties.owner.objectId | string |  |   4c153924-1e22-4q
 action_result.data.\*.properties.owner.userPrincipalName | string |  `email`  |   testuser@gmail.com 
 action_result.data.\*.properties.severity | string |  |   Medium 
 action_result.data.\*.properties.status | string |  |   New 
-action_result.data.\*.properties.title | string |  |   AP New Updated Incident 
-action_result.data.\*.type | string |  |   Microsoft.SecurityInsights/Incidents 
+action_result.data.\*.properties.title | string |  |   New Updated Incident 
+action_result.data.\*.type | string |  |   org/Incidents 
 action_result.summary.incident_id | string |  `mssentinel incident id`  |  
 action_result.summary.incident_name | string |  `mssentinel incident name`  |  
 action_result.message | string |  |   Incident Updated Successfully 
 summary.total_objects | numeric |  |   1 
-summary.total_objects_successful | numeric |  |   1 
-action_result.data.\*.properties.description | string |  |   Incident for test alerts 
-action_result.parameter.labels | string |  |   Tag1   
+summary.total_objects_successful | numeric |  |   1   
 
 ## action: 'add incident comment'
 Creates a new incident comment
@@ -458,11 +459,11 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
 action_result.status | string |  |   success  failed 
-action_result.parameter.incident_name | string |  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
+action_result.parameter.incident_name | string |  `mssentinel incident name`  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
 action_result.parameter.message | string |  |   Update Owner 
-action_result.data.\*.id | string |  |   /subscriptions/4c153924-1e22-4q91-98ca-130e9a05aa70/resourceGroups/PluginFramework/providers/Microsoft.OperationalInsights/workspaces/Computeworkspace/providers/Microsoft.SecurityInsights/Incidents/4c153924-1e22-4q91-98ca-130e9a05aa70/Comments/1684833925 
+action_result.data.\*.etag | string |  |   "4c153924-1e22-4q91-98ca-130e9a05aa70" 
+action_result.data.\*.id | string |  |  
 action_result.data.\*.name | string |  |   1684833925 
-action_result.data.\*.type | string |  |   Microsoft.SecurityInsights/Incidents/Comments 
 action_result.data.\*.properties.author.email | string |  `email`  |   testuser@gmail.com 
 action_result.data.\*.properties.author.name | string |  |   User1 
 action_result.data.\*.properties.author.objectId | string |  |   4c153924-1e22-4q91-98ca-130e9a05aa70 
@@ -470,11 +471,11 @@ action_result.data.\*.properties.author.userPrincipalName | string |  `email`  |
 action_result.data.\*.properties.createdTimeUtc | string |  |   2023-05-23T09:25:25.7863587Z 
 action_result.data.\*.properties.lastModifiedTimeUtc | string |  |   2023-05-23T09:25:25.7863587Z 
 action_result.data.\*.properties.message | string |  |   Update Owner and status 
+action_result.data.\*.type | string |  |   org/Incidents/Comments 
 action_result.summary | string |  |  
 action_result.message | string |  |   Incident Updated Successfully 
 summary.total_objects | numeric |  |   1 
-summary.total_objects_successful | numeric |  |   1 
-action_result.data.\*.etag | string |  |   "4c153924-1e22-4q91-98ca-130e9a05aa70"   
+summary.total_objects_successful | numeric |  |   1   
 
 ## action: 'run query'
 Queries the Sentinel Log Analytics workspace for data using KQL
@@ -494,11 +495,11 @@ DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 action_result.status | string |  |   success  failed 
 action_result.parameter.query | string |  |   SecurityIncident | project AdditionalData, Comments, Title | summarize count() by Title 
 action_result.parameter.timespan | string |  |  
+action_result.data.\*.SentinelTableName | string |  |   PrimaryResult 
 action_result.data.\*.TimeGenerated | string |  |  
+action_result.data.\*.Title | string |  |   Suspicious activity found by incident on multiple endpoints 
+action_result.data.\*.count_ | numeric |  |   5 
 action_result.summary.total_rows | numeric |  |   30 
 action_result.message | string |  |   Total rows: 30 
 summary.total_objects | numeric |  |   1 
 summary.total_objects_successful | numeric |  |   1 
-action_result.data.\*.Title | string |  |   Suspicious activity found by incident on multiple endpoints 
-action_result.data.\*.count_ | numeric |  |   5 
-action_result.data.\*.SentinelTableName | string |  |   PrimaryResult 
