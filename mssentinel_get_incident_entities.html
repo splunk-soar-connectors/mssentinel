@@ -13,8 +13,8 @@
 
 {% block widget_content %}
 <!-- Main Start Block -->
-<!-- File: mssentinel_get_incident_entities.html
-  Copyright (c) 2022 Splunk Inc.
+<!--File: mssentinel_get_incident_entities.html
+Copyright (c) 2022-2023 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -89,6 +89,16 @@ and limitations under the License.
     {% else %}
     <h3 class="wf-h3-style">Info</h3>
     <table class="wf-table-vertical">
+        <tr>
+            <td>Incident Name</td>
+            <td>
+                <a href="javascript:;"
+                    onclick="context_menu(this, [{'contains': ['mssentinel incident name'], 'value': '{{result.param.incident_name }}' }], 0, {{ container.id }}, null, false);">
+                    {{result.param.incident_name}}
+                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                </a>
+            </td>
+        </tr>
         {% if result.param.query %}
         <tr>
             <td>Query</td>
@@ -113,17 +123,18 @@ and limitations under the License.
         </tr>
     </table>
     <h3 class="wf-h3-style">Entity Info</h3>
-
+    {% for result in result.data %}
     <table class="wf-table-horizontal datatable">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Entity Name</th>
                 <th>Type</th>
                 <th>Kind</th>
             </tr>
         </thead>
         <tbody>
-            {% for current_entry in result.data.entities %}
+
+            {% for current_entry in result.entities %}
             <tr>
                 <td>{{current_entry.name}}</td>
                 <td>{{current_entry.type}}</td>
@@ -133,6 +144,7 @@ and limitations under the License.
         </tbody>
 
     </table>
+    {% endfor %}
     <br>
     {% endif %}
     {% endfor %} <!-- loop for each result end -->
@@ -156,6 +168,8 @@ and limitations under the License.
         }
     });
     $.fn.DataTable.ext.pager.numbers_length = 5;
-    $('.datatable').DataTable();
+    $('.datatable').DataTable({
+        "iDisplayLength": 5
+    });
 </script>
 {% endblock %} <!-- Main Start Block -->
