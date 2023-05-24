@@ -16,32 +16,40 @@ and limitations under the License.
   <head></head>
   <body>
     <h1>Setup</h1>
-    <h2>Azure Configuration</h2>
-    <h3>Create an App Registration</h3>
-    <p>In order to configure the Sentinel app, a new App Registration in the Azure Portal is required.
-        Please refer to <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#register-an-application">Register an Application</a> for
-        further guidance.
-    </p>
-    <p>
-      The Sentinel SOAR App uses the client-credentials flow to authenticate against Azure. Under your created App registration, in Certificates & Secrets, create a new Client Secret.
-      Save the secret value for later use during asset configuration.
-    </p>
+    <h2>Authentication</h2>
+      <h3>Microsoft Azure Application creation</h3>
+      <p>This app requires creating a Microsoft Azure Application. To do so, navigate to <a href="https://portal.azure.com" target="_blank">https://portal.azure.com</a> in a browser and log in with a Microsoft account, then select <b>Azure Active Directory</b>.</p>
+      <ol>
+        <li>Go to <b>App Registrations</b> and click on <b>+ New registration</b>.</li>
+        <li>Give the app an appropriate name.</li>
+        <li>Select a supported account type.</li>
+        <li>Click on the <b>Register</b>.</li>
+        <ul>
+          <li>Under <b>Certificates & secrets</b>, add <b>New client secret</b>. Note this key somewhere secure, as it cannot be retrieved after closing the window.</li>
+          <li>Under <b>Redirect URIs</b> we will be updating the entry of https://phantom.local to reflect the actual redirect URI.  We will get this from the SOAR asset we create below in the section titled "Configure the Sentinel SOAR app Asset"
+        </ul>
+      </ol>
 
-    <h3>Assign required Permissions to the App Registration</h3>
-    <p>
-      Under your subscription, select the <b>Add role assignment</b> context menu and assign the <i>Azure Sentinel Contributor</i> role to your registered app.
-    </p>
-
-    <h3>SOAR Configuration</h3>
-    <p>
-      When creating your SOAR asset, enter the Application ID as <b>Client ID</b> and the saved secret value as <b>Client Secret</b>.
-    </p>
-    <p>In order to connect to your Sentinel environment, the <b>Tenant ID</b>, <b>Subscription ID</b>, <b>Workspace Name</b>, <b>Workspace ID</b>, <b>Resource Group</b>
-      fields are required. They can be found inside of the Azure Portal. Fields related to polling are optional.
-    </p>
-
-    <p>In order to retrieve the Workspace ID, navigate to your Sentinel Settings -> Workspace Settings</p>
-
+    <h3>Assign required Permission to the App Registration</h3>
+    <ol>
+      <li>Under your subscription, In the menu bar, select the <b>Access control (IAM)</b>.</li>
+      <li>Click on <b>+ Add</b> then select <b>Add role assignment</b>.</li>
+      <li>On next page, Select <b>Microsoft Sentinel Contributor</b> role from <b>Role</b> section.</li>
+      <li>In <b>Member</b> Section, Add Azure app which is created in earlier steps.</li>
+      <li>Click on, Review + assign.
+    </ol>
+    <h3>Configure Sentinel SOAR app asset</h3>
+      <p>When creating an asset for the <b>Sentinel</b> app, place the <b>Application ID</b> of the app created during the previous step in the <b>Client ID</b> field and place the password generated during the app creation process in the <b>Client Secret</b> field.</p>
+      <p>In order to connect to your Sentinel environment, the <b>Tenant ID</b>, <b>Subscription ID</b>, <b>Workspace Name</b>, <b>Workspace ID</b> and <b>Resource Group</b>
+        fields are required. They can be found inside of the Azure Portal.
+      </p>
+      <p>In order to retrieve the above fields, navigate to your Sentinel Settings -> Go to Workspace Settings, where all fields will be held.</p>
+      <p>Fields related to polling are optional.</p>
+      <p>Click on Save.</p>
+      <p>After saving, a new field will appear in the <b>Asset Settings</b> tab. Take the URL found in the <b>POST incoming for Sentinel to this location</b> field and place it in the <b>Redirect URIs</b> field of the Azure Application configuration page. To this URL, add <b>/result</b>. After doing so the URL should look something like:</p>
+      <p>https://&lt;soar_host&gt;/rest/handler/sentinel_e6434377-a3e4-4a5f-bfef-4f37e53e0676/&lt;asset_name&gt;/result</p>
+      <br>
+      Once again, click on Save.
 
     <h1>Usage</h1>
     <h2>How Sentinel handles identifiers</h2>
@@ -53,10 +61,32 @@ and limitations under the License.
     </pre></code>
     </p>
 
-    <p>is simply 80289647-8743-4a67-87db-9409e597b0db</p>
-    <h2>Run Query</h2>
-    <h3>Timerange</h3>
-    <p>The <b>timerange</b> parameter expects a <a href="https://en.wikipedia.org/wiki/ISO_8601#Durations">ISO 8061</a> duration. Please find some commonly used values below</p>
+    <p>is simply 80289647-8743-4x67-87xx-9409x59xxxxx.</p>
+    <h2>Run Query Action</h2>
+    <h3>Query</h3>
+    <p>The <b>query</b> parameter expects <b>KQL(Kusto Query Language)</b> type string as a input. Please find some examples below.</p>
+    <ul>
+      <li>
+        <p>For retrieving any table details</p>
+        <p>Query: SecurityIncident </p>
+      </li>
+      <li>
+        <p>Fetch only N number of rows</p>
+        <p>Query: TableName | take N </p>
+      </li>
+      <li>
+        <p>Sort data by any column</p>
+        <p>Query: TableName | sort by Column1 desc | take 5</p>
+      </li>
+      <li>
+        <p>Use <b>where</b> key for find any specific column.</p>
+        <p>Query: TableName | where Column1 == "Value1" and Column2 == "Value2"</p>
+        <p>Query: TableName | where Column1 >= ago(7d) | sort by Column2 desc | take 5</p>
+      </li>
+    </ul>
+    For more KQL queries, please refer <a href="https://learn.microsoft.com/en-us/azure/sentinel/kusto-overview">KQL Overview</a>.
+    <h3>Timespan</h3>
+    <p>The <b>timespan</b> parameter expects a <a href="https://en.wikipedia.org/wiki/ISO_8601#Durations">ISO 8061</a> duration. Please find some commonly used values below</p>
     <ul>
       <li><b>Last 7 days</b>: P7D</li>
       <li><b>Last 24 hours</b>: P1D</li>
