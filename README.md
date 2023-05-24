@@ -31,24 +31,18 @@ This app provides integration with Microsoft Sentinel
 ### Microsoft Azure Application creation
 
 This app requires creating a Microsoft Azure Application. To do so, navigate to
-<a href="https://portal.azure.com" target="_blank">https://portal.azure.com</a> in a browser and log
-in with a Microsoft account, then select **Azure Active Directory** .
+<https://portal.azure.com> in a browser and log in with a Microsoft account, then select **Azure
+Active Directory** .
 
 1.  Go to **App Registrations** and click on **+ New registration** .
-
 2.  Give the app an appropriate name.
-
 3.  Select a supported account type.
-
 4.  Click on the **Register** .
-
-      
-
-    - Under **Certificates & secrets** , add **New client secret** . Note this key somewhere secure,
-      as it cannot be retrieved after closing the window.
-    - Under **Redirect URIs** we will be updating the entry of https://phantom.local to reflect the
-      actual redirect URI. We will get this from the SOAR asset we create below in the section
-      titled "Configure the Sentinel SOAR app Asset"
+    -   Under **Certificates & secrets** , add **New client secret** . Note this key somewhere
+        secure, as it cannot be retrieved after closing the window.
+    -   Under **Redirect URIs** we will be updating the entry of https://phantom.local to reflect
+        the actual redirect URI. We will get this from the SOAR asset we create below in the section
+        titled "Configure the Sentinel SOAR app Asset"
 
 ### Assign required Permission to the App Registration
 
@@ -68,7 +62,7 @@ In order to connect to your Sentinel environment, the **Tenant ID** , **Subscrip
 **Workspace Name** , **Workspace ID** and **Resource Group** fields are required. They can be found
 inside of the Azure Portal.
 
-In order to retrieve the above fields, navigate to your Sentinel Settings -\> Go to Workspace
+In order to retrieve the above fields, navigate to your Sentinel Settings -> Go to Workspace
 Settings, where all fields will be held.
 
 Fields related to polling are optional.
@@ -80,7 +74,7 @@ After saving, a new field will appear in the **Asset Settings** tab. Take the UR
 the Azure Application configuration page. To this URL, add **/result** . After doing so the URL
 should look something like:
 
-https://\<soar_host\>/rest/handler/sentinel_e6434377-a3e4-4a5f-bfef-4f37e53e0676/\<asset_name\>/result
+https://\<soar_host>/rest/handler/sentinel_e6434377-a3e4-4a5f-bfef-4f37e53e0676/\<asset_name>/result
 
   
 Once again, click on Save.
@@ -106,23 +100,23 @@ is simply 80289647-8743-4x67-87xx-9409x59xxxxx.
 The **query** parameter expects **KQL(Kusto Query Language)** type string as a input. Please find
 some examples below.
 
-- For retrieving any table details
+-   For retrieving any table details
 
-  Query: SecurityIncident
+    Query: SecurityIncident
 
-- Fetch only N number of rows
+-   Fetch only N number of rows
 
-  Query: TableName | take N
+    Query: TableName | take N
 
-- Sort data by any column
+-   Sort data by any column
 
-  Query: TableName | sort by Column1 desc | take 5
+    Query: TableName | sort by Column1 desc | take 5
 
-- Use **where** key for find any specific column.
+-   Use **where** key for find any specific column.
 
-  Query: TableName | where Column1 == "Value1" and Column2 == "Value2"
+    Query: TableName | where Column1 == "Value1" and Column2 == "Value2"
 
-  Query: TableName | where Column1 \>= ago(7d) | sort by Column2 desc | take 5
+    Query: TableName | where Column1 \>= ago(7d) | sort by Column2 desc | take 5
 
 For more KQL queries, please refer [KQL
 Overview](https://learn.microsoft.com/en-us/azure/sentinel/kusto-overview) .
@@ -132,10 +126,10 @@ Overview](https://learn.microsoft.com/en-us/azure/sentinel/kusto-overview) .
 The **timespan** parameter expects a [ISO 8061](https://en.wikipedia.org/wiki/ISO_8601#Durations)
 duration. Please find some commonly used values below
 
-- **Last 7 days** : P7D
-- **Last 24 hours** : P1D
-- **Last 24 hours** : P1D
-- **Last 30 minutes:** : PT30M
+-   **Last 7 days** : P7D
+-   **Last 24 hours** : P1D
+-   **Last 24 hours** : P1D
+-   **Last 30 minutes:** : PT30M
 
 ### Post-Processing
 
