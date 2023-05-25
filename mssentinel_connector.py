@@ -880,7 +880,7 @@ class SentinelConnector(BaseConnector):
 
         action_result.add_data(updated_incident)
 
-        return action_result.set_status(phantom.APP_SUCCESS, "Incident Updated Successfully")
+        return action_result.set_status(phantom.APP_SUCCESS, "Incident updated successfully")
 
     def _handle_add_incident_comment(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -907,7 +907,7 @@ class SentinelConnector(BaseConnector):
 
         action_result.add_data(response)
 
-        return action_result.set_status(phantom.APP_SUCCESS)
+        return action_result.set_status(phantom.APP_SUCCESS, "Comment added successfully")
 
     def _handle_run_query(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))

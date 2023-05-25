@@ -89,6 +89,16 @@ and limitations under the License.
     {% else %}
     <h3 class="wf-h3-style">Info</h3>
     <table class="wf-table-vertical">
+        <tr>
+            <td>Incident Name</td>
+            <td>
+                <a href="javascript:;"
+                    onclick="context_menu(this, [{'contains': ['mssentinel incident name'], 'value': '{{result.param.incident_name }}' }], 0, {{ container.id }}, null, false);">
+                    {{result.param.incident_name}}
+                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                </a>
+            </td>
+        </tr>
         {% if result.param.query %}
         <tr>
             <td>Query</td>
@@ -117,7 +127,7 @@ and limitations under the License.
     <table class="wf-table-horizontal datatable">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Entity Name</th>
                 <th>Type</th>
                 <th>Kind</th>
             </tr>
@@ -126,12 +136,7 @@ and limitations under the License.
 
             {% for current_entry in result.entities %}
             <tr>
-                <td><a href="javascript:;"
-                    onclick="context_menu(this, [{'contains': ['mssentinel incident name'], 'value': '{{ current_entry.name }}' }], 0, {{ container.id }}, null, false);">
-                        {{current_entry.name}}&nbsp;
-                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                    </a>
-                </td>
+                <td>{{current_entry.name}}</td>
                 <td>{{current_entry.type}}</td>
                 <td>{{current_entry.kind}}</td>
             </tr>

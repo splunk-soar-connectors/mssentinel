@@ -11,7 +11,7 @@
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2022-2023 Splunk Inc.",
-    "app_version": "1.0.1",
+    "app_version": "2.0.0",
     "utctime_updated": "2022-04-30T14:52:08.552463Z",
     "package_name": "phantom_mssentinel",
     "main_module": "mssentinel_connector.py",
@@ -103,7 +103,7 @@
         {
             "action": "get incident",
             "identifier": "get_incident",
-            "description": "Gets a given incident",
+            "description": "Get information of given incident",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -154,7 +154,7 @@
                     "contains": [
                         "mssentinel incident name"
                     ],
-                    "column_name": "Name",
+                    "column_name": "Incident Name",
                     "column_order": 0,
                     "example_values": [
                         "4c153924-1e22-4q91-98ca-130e9a05aa70"
@@ -251,7 +251,7 @@
                     "data_path": "action_result.data.*.properties.owner.userPrincipalName",
                     "data_type": "string",
                     "column_name": "Owner UPN",
-                    "column_order": 3,
+                    "column_order": 5,
                     "example_values": [
                         "testuser@gmail.com"
                     ],
@@ -262,6 +262,8 @@
                 {
                     "data_path": "action_result.data.*.properties.severity",
                     "data_type": "string",
+                    "column_name": "Severity",
+                    "column_order": 4,
                     "example_values": [
                         "High"
                     ]
@@ -269,6 +271,8 @@
                 {
                     "data_path": "action_result.data.*.properties.status",
                     "data_type": "string",
+                    "column_name": "Status",
+                    "column_order": 3,
                     "example_values": [
                         "Active"
                     ]
@@ -292,11 +296,8 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary.incident_id",
-                    "data_type": "string",
-                    "contains": [
-                        "mssentinel incident id"
-                    ]
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.message",
@@ -328,7 +329,7 @@
         {
             "action": "get incident entities",
             "identifier": "get_incident_entities",
-            "description": "Gets all entities for an incident",
+            "description": "Get all entities for an incident",
             "read_only": true,
             "type": "investigate",
             "parameters": {
@@ -644,7 +645,7 @@
         {
             "action": "get incident alerts",
             "identifier": "get_incident_alerts",
-            "description": "Gets all alerts for an incident",
+            "description": "Get all alerts for an incident",
             "type": "investigate",
             "parameters": {
                 "incident_name": {
@@ -869,7 +870,7 @@
         {
             "action": "list incidents",
             "identifier": "list_incidents",
-            "description": "Gets all incidents",
+            "description": "Get all incidents",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -1299,7 +1300,7 @@
                 {
                     "data_path": "action_result.data.*.name",
                     "data_type": "string",
-                    "column_name": "Name",
+                    "column_name": "Incident Name",
                     "column_order": 0,
                     "contains": [
                         "mssentinel incident name"
@@ -1405,6 +1406,8 @@
                 {
                     "data_path": "action_result.data.*.properties.owner.userPrincipalName",
                     "data_type": "string",
+                    "column_name": "Owner UPN",
+                    "column_order": 5,
                     "example_values": [
                         "testuser@gmail.com"
                     ],
@@ -1415,6 +1418,8 @@
                 {
                     "data_path": "action_result.data.*.properties.severity",
                     "data_type": "string",
+                    "column_name": "Severity",
+                    "column_order": 4,
                     "example_values": [
                         "Medium"
                     ]
@@ -1422,6 +1427,8 @@
                 {
                     "data_path": "action_result.data.*.properties.status",
                     "data_type": "string",
+                    "column_name": "Status",
+                    "column_order": 3,
                     "example_values": [
                         "New"
                     ]
@@ -1429,6 +1436,8 @@
                 {
                     "data_path": "action_result.data.*.properties.title",
                     "data_type": "string",
+                    "column_name": "Title",
+                    "column_order": 2,
                     "example_values": [
                         "New Updated Incident"
                     ]
@@ -1443,18 +1452,8 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary.incident_id",
-                    "data_type": "string",
-                    "contains": [
-                        "mssentinel incident id"
-                    ]
-                },
-                {
-                    "data_path": "action_result.summary.incident_name",
-                    "data_type": "string",
-                    "contains": [
-                        "mssentinel incident name"
-                    ]
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.message",
