@@ -2,7 +2,7 @@
 # Sentinel
 
 Publisher: Splunk  
-Connector Version: 1.0.1  
+Connector Version: 2.0.0  
 Product Vendor: Microsoft  
 Product Name: Sentinel  
 Product Version Supported (regex): ".\*"  
@@ -158,10 +158,10 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 ### Supported Actions  
 [test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity  
 [on poll](#action-on-poll) - Callback action for the on_poll ingest functionality  
-[get incident](#action-get-incident) - Gets a given incident  
-[get incident entities](#action-get-incident-entities) - Gets all entities for an incident  
-[get incident alerts](#action-get-incident-alerts) - Gets all alerts for an incident  
-[list incidents](#action-list-incidents) - Gets all incidents  
+[get incident](#action-get-incident) - Get information of given incident  
+[get incident entities](#action-get-incident-entities) - Get all entities for an incident  
+[get incident alerts](#action-get-incident-alerts) - Get all alerts for an incident  
+[list incidents](#action-list-incidents) - Get all incidents  
 [update incident](#action-update-incident) - Updates an existing incident  
 [add incident comment](#action-add-incident-comment) - Creates a new incident comment  
 [run query](#action-run-query) - Queries the Sentinel Log Analytics workspace for data using KQL  
@@ -191,7 +191,7 @@ No parameters are required for this action
 No Output  
 
 ## action: 'get incident'
-Gets a given incident
+Get information of given incident
 
 Type: **investigate**  
 Read only: **True**
@@ -226,13 +226,13 @@ action_result.data.\*.properties.severity | string |  |   High
 action_result.data.\*.properties.status | string |  |   Active 
 action_result.data.\*.properties.title | string |  |   Incident Rule 
 action_result.data.\*.type | string |  |   org/Incidents 
-action_result.summary.incident_id | string |  `mssentinel incident id`  |  
+action_result.summary | string |  |  
 action_result.message | string |  |   Successfully retrieved incident details 
 summary.total_objects | numeric |  |   1 
 summary.total_objects_successful | numeric |  |   1   
 
 ## action: 'get incident entities'
-Gets all entities for an incident
+Get all entities for an incident
 
 Type: **investigate**  
 Read only: **True**
@@ -289,7 +289,7 @@ summary.total_objects | numeric |  |   1
 summary.total_objects_successful | numeric |  |   1   
 
 ## action: 'get incident alerts'
-Gets all alerts for an incident
+Get all alerts for an incident
 
 Type: **investigate**  
 Read only: **True**
@@ -334,7 +334,7 @@ summary.total_objects | numeric |  |   1
 summary.total_objects_successful | numeric |  |   1   
 
 ## action: 'list incidents'
-Gets all incidents
+Get all incidents
 
 Type: **investigate**  
 Read only: **True**
@@ -437,8 +437,7 @@ action_result.data.\*.properties.severity | string |  |   Medium
 action_result.data.\*.properties.status | string |  |   New 
 action_result.data.\*.properties.title | string |  |   New Updated Incident 
 action_result.data.\*.type | string |  |   org/Incidents 
-action_result.summary.incident_id | string |  `mssentinel incident id`  |  
-action_result.summary.incident_name | string |  `mssentinel incident name`  |  
+action_result.summary | string |  |  
 action_result.message | string |  |   Incident Updated Successfully 
 summary.total_objects | numeric |  |   1 
 summary.total_objects_successful | numeric |  |   1   
