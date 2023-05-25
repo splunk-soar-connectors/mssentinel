@@ -578,7 +578,6 @@ class SentinelConnector(BaseConnector):
         self.save_progress(consts.MS_SENTINEL_RETRIEVING_ACCESS_TOKEN_MESSAGE)
 
         ret_val = self._generate_new_access_token(action_result)
-        self.save_progress("Token: {}".format(self._access_token))
         if phantom.is_fail(ret_val):
             self.save_progress(consts.MS_SENTINEL_FAILED_RETRIEVING_ACCESS_TOKEN)
             self.save_progress(consts.MS_SENTINEL_TEST_CONNECTIVITY_FAILED)
@@ -702,14 +701,12 @@ class SentinelConnector(BaseConnector):
                 action_result, config.get(consts.FIRST_RUN_MAX_INCIDENTS, max_incidents),
                 consts.FIRST_RUN_MAX_INCIDENTS)
             if phantom.is_fail(ret_val):
-                self.debug_print("AP Invalid integer")
                 return action_result.get_status()
         else:
             last_modified_time = self._state.get(consts.STATE_LAST_TIME, last_modified_time)
 
         endpoint = f"{self._api_url}{consts.MS_SENTINEL_API_INCIDENTS}"
 
-        self.save_progress("Last modified time: {}".format(last_modified_time))
         params = {
             "$filter": f"(properties/lastModifiedTimeUtc gt {last_modified_time})",
             "$top": consts.MS_SENTINEL_DEFAULT_SIZE,
@@ -987,8 +984,6 @@ class SentinelConnector(BaseConnector):
             self.save_progress(consts.MS_SENTINEL_STATE_FILE_CORRUPT_ERROR)
             self._state = {"app_version": self.get_app_json().get("app_version")}
 
-        self.debug_print("State filee ap: {}".format(self._state))
-
         # get the asset config
         config = self.get_config()
 
@@ -1038,11 +1033,9 @@ class SentinelConnector(BaseConnector):
             login_payload['redirect_uri'] = self._state.get('redirect_uri')
             auth_code = self._state.get('code', None)
             if self._state.get(consts.MS_SENTINEL_TOKEN_STRING, {}).get(consts.MS_SENTINEL_REFRESH_TOKEN_STRING, None):
-                self.save_progress("Using refresh tokennn")
                 login_payload["refresh_token"] = self._refresh_token
                 login_payload["grant_type"] = 'refresh_token'
             elif auth_code:
-                self.save_progress("using auth code: {}".format(auth_code))
                 self._state.pop('code')
                 login_payload["code"] = auth_code
                 login_payload["grant_type"] = 'authorization_code'
