@@ -1,6 +1,6 @@
 # File: mssentinel_connector.py
 #
-# Copyright (c) 2022-2023 Splunk Inc.
+# Copyright (c) 2022-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -71,9 +71,7 @@ class SentinelConnector(BaseConnector):
         state = super().load_state()
         if not isinstance(state, dict):
             self.debug_print("Reseting the state file with the default format")
-            state = {
-                "app_version": self.get_app_json().get('app_version')
-            }
+            state = {"app_version": self.get_app_json().get("app_version")}
             return state
         try:
             state = self._rsh.decrypt_state(state, self._asset_id)
@@ -110,75 +108,71 @@ class SentinelConnector(BaseConnector):
         if parameter is not None:
             try:
                 if not float(parameter).is_integer():
-                    return RetVal(action_result.set_status(phantom.APP_ERROR,
-                                                           consts.MS_SENTINEL_VALID_INT_MESSAGE.format(param=key)))
+                    return RetVal(action_result.set_status(phantom.APP_ERROR, consts.MS_SENTINEL_VALID_INT_MESSAGE.format(param=key)))
 
                 parameter = int(parameter)
             except Exception:
-                return RetVal(action_result.set_status(phantom.APP_ERROR,
-                                                       consts.MS_SENTINEL_VALID_INT_MESSAGE.format(param=key)))
+                return RetVal(action_result.set_status(phantom.APP_ERROR, consts.MS_SENTINEL_VALID_INT_MESSAGE.format(param=key)))
 
             if parameter < 0:
-                return RetVal(action_result.set_status(phantom.APP_ERROR,
-                                                       consts.MS_SENTINEL_NON_NEG_INT_MESSAGE.format(param=key)))
+                return RetVal(action_result.set_status(phantom.APP_ERROR, consts.MS_SENTINEL_NON_NEG_INT_MESSAGE.format(param=key)))
             if not allow_zero and parameter == 0:
-                return RetVal(action_result.set_status(
-                    phantom.APP_ERROR, consts.MS_SENTINEL_NON_NEG_NON_ZERO_INT_MESSAGE.format(param=key)))
+                return RetVal(action_result.set_status(phantom.APP_ERROR, consts.MS_SENTINEL_NON_NEG_NON_ZERO_INT_MESSAGE.format(param=key)))
 
         return RetVal(phantom.APP_SUCCESS, parameter)
 
     @staticmethod
     def _get_dir_name_from_app_name(app_name):
-        """ Get name of the directory for the app.
+        """Get name of the directory for the app.
 
         :param app_name: Name of the application for which directory name is required
         :return: app_name: Name of the directory for the application
         """
 
-        app_name = ''.join([x for x in app_name if x.isalnum()])
+        app_name = "".join([x for x in app_name if x.isalnum()])
         app_name = app_name.lower()
         if not app_name:
-            app_name = 'app_for_phantom'
+            app_name = "app_for_phantom"
         return app_name
 
     def _get_asset_name(self, action_result):
-        """ Get name of the asset using SOAR URL.
+        """Get name of the asset using SOAR URL.
 
         :param action_result: object of ActionResult class
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS(along with appropriate message), asset name
         """
 
-        url = urljoin(self.get_phantom_base_url(), f'rest/asset/{self._asset_id}')
+        url = urljoin(self.get_phantom_base_url(), f"rest/asset/{self._asset_id}")
         ret_val, resp_json = self._make_rest_call(action_result=action_result, endpoint=url, verify=False)  # nosemgrep
 
         if phantom.is_fail(ret_val):
             return ret_val, None
 
-        asset_name = resp_json.get('name')
+        asset_name = resp_json.get("name")
         if not asset_name:
-            return action_result.set_status(phantom.APP_ERROR, f'Asset Name for id: {self._asset_id} not found.'), None
+            return action_result.set_status(phantom.APP_ERROR, f"Asset Name for id: {self._asset_id} not found."), None
         return phantom.APP_SUCCESS, asset_name
 
     def _get_external_phantom_base_url(self, action_result):
-        """ Get base url of SOAR.
+        """Get base url of SOAR.
 
         :param action_result: object of ActionResult class
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS(along with appropriate message),
         base url of SOAR
         """
 
-        url = urljoin(self.get_phantom_base_url(), 'rest/system_info')
+        url = urljoin(self.get_phantom_base_url(), "rest/system_info")
         ret_val, resp_json = self._make_rest_call(action_result=action_result, endpoint=url, verify=False)  # nosemgrep
         if phantom.is_fail(ret_val):
             return ret_val, None
 
-        phantom_base_url = resp_json.get('base_url').rstrip("/")
+        phantom_base_url = resp_json.get("base_url").rstrip("/")
         if not phantom_base_url:
             return action_result.set_status(phantom.APP_ERROR, consts.MS_SENTINEL_BASE_URL_NOT_FOUND_MESSAGE), None
         return phantom.APP_SUCCESS, phantom_base_url
 
     def _get_app_rest_url(self, action_result):
-        """ Get URL for making rest calls.
+        """Get URL for making rest calls.
 
         :param action_result: object of ActionResult class
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS(along with appropriate message),
@@ -193,10 +187,10 @@ class SentinelConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status(), None
 
-        self.save_progress(f'Using SOAR base URL: {phantom_base_url}')
+        self.save_progress(f"Using SOAR base URL: {phantom_base_url}")
         app_json = self.get_app_json()
-        app_id = app_json['appid']
-        app_name = app_json['name']
+        app_id = app_json["appid"]
+        app_name = app_json["name"]
 
         app_dir_name = self._get_dir_name_from_app_name(app_name)
         url_to_app_rest = f"{phantom_base_url}/rest/handler/{app_dir_name}_{app_id}/{asset_name}"
@@ -236,8 +230,10 @@ class SentinelConnector(BaseConnector):
 
         return RetVal(
             action_result.set_status(
-                phantom.APP_ERROR, "Empty response and no information in the header,"
-                                   " Status Code: {}".format(response.status_code)), None)
+                phantom.APP_ERROR, "Empty response and no information in the header," " Status Code: {}".format(response.status_code)
+            ),
+            None,
+        )
 
     @staticmethod
     def _check_invalid_since_utc_time(time_format):
@@ -290,15 +286,15 @@ class SentinelConnector(BaseConnector):
             for element in soup(["script", "style", "footer", "nav"]):
                 element.extract()
             error_text = soup.text
-            split_lines = error_text.split('\n')
+            split_lines = error_text.split("\n")
             split_lines = [x.strip() for x in split_lines if x.strip()]
-            error_text = '\n'.join(split_lines)
+            error_text = "\n".join(split_lines)
         except Exception:
             error_text = "Cannot parse error details"
 
         message = "Status Code: {0}. Error from server:\n{1}\n".format(status_code, error_text)
 
-        message = message.replace(u'{', '{{').replace(u'}', '}}')
+        message = message.replace("{", "{{").replace("}", "}}")
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _process_json_response(self, r, action_result):
@@ -307,12 +303,7 @@ class SentinelConnector(BaseConnector):
             resp_json = r.json()
         except Exception as e:
             error_txt = self._get_error_message_from_exception(e)
-            return RetVal(
-                action_result.set_status(
-                    phantom.APP_ERROR,
-                    "Unable to parse JSON response. Error: {0}".format(str(error_txt))
-                ), None
-            )
+            return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to parse JSON response. Error: {0}".format(str(error_txt))), None)
 
         # Please specify the status codes here
         if 200 <= r.status_code < 399:
@@ -320,30 +311,29 @@ class SentinelConnector(BaseConnector):
 
         # You should process the error returned in the json
         message = "Error from server. Status Code: {0} Response from server: {1}".format(
-            r.status_code,
-            r.text.replace(u'{', '{{').replace(u'}', '}}')
+            r.status_code, r.text.replace("{", "{{").replace("}", "}}")
         )
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _process_response(self, r, action_result):
         # store the r_text in debug data, it will get dumped in the logs if the action fails
-        if hasattr(action_result, 'add_debug_data'):
-            action_result.add_debug_data({'r_status_code': r.status_code})
-            action_result.add_debug_data({'r_text': r.text})
-            action_result.add_debug_data({'r_headers': r.headers})
+        if hasattr(action_result, "add_debug_data"):
+            action_result.add_debug_data({"r_status_code": r.status_code})
+            action_result.add_debug_data({"r_text": r.text})
+            action_result.add_debug_data({"r_headers": r.headers})
 
         # Process each 'Content-Type' of response separately
 
         # Process a json response
-        if 'json' in r.headers.get('Content-Type', ''):
+        if "json" in r.headers.get("Content-Type", ""):
             return self._process_json_response(r, action_result)
 
         # Process an HTML response, Do this no matter what the api talks.
         # There is a high chance of a PROXY in between phantom and the rest of
         # world, in case of errors, PROXY's return HTML, this function parses
         # the error and adds it to the action_result.
-        if 'html' in r.headers.get('Content-Type', ''):
+        if "html" in r.headers.get("Content-Type", ""):
             return self._process_html_response(r, action_result)
 
         # it's not content-type that is to be parsed, handle an empty response
@@ -352,8 +342,7 @@ class SentinelConnector(BaseConnector):
 
         # everything else is actually an error at this point
         message = "Can't process response from server. Status Code: {0} Error from server: {1}".format(
-            r.status_code,
-            r.text.replace('{', '{{').replace('}', '}}')
+            r.status_code, r.text.replace("{", "{{").replace("}", "}}")
         )
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
@@ -366,25 +355,16 @@ class SentinelConnector(BaseConnector):
         try:
             request_func = getattr(requests, method)
         except AttributeError:
-            return RetVal(
-                action_result.set_status(phantom.APP_ERROR, "Invalid method: {0}".format(method)),
-                resp_json
-            )
+            return RetVal(action_result.set_status(phantom.APP_ERROR, "Invalid method: {0}".format(method)), resp_json)
 
         # Create a URL to connect to
         try:
-            r = request_func(
-                endpoint,
-                verify=verify,
-                **kwargs
-            )
+            r = request_func(endpoint, verify=verify, **kwargs)
         except Exception as e:
             error_txt = self._get_error_message_from_exception(e)
             return RetVal(
-                action_result.set_status(
-                    phantom.APP_ERROR,
-                    "Error Connecting to server. Details: {0}".format(str(error_txt))
-                ), resp_json)
+                action_result.set_status(phantom.APP_ERROR, "Error Connecting to server. Details: {0}".format(str(error_txt))), resp_json
+            )
 
         return self._process_response(r, action_result)
 
@@ -400,7 +380,7 @@ class SentinelConnector(BaseConnector):
         if not self._loganalytic_token:
             ret_val = self._generate_new_loganalytics_access_token(action_result)
             if phantom.is_fail(ret_val):
-               return action_result.get_status(), None
+                return action_result.get_status(), None
 
         kwargs["headers"]["Authorization"] = f"Bearer {self._loganalytic_token}"
         ret_val, resp_json = self._make_rest_call(endpoint, action_result, method, **kwargs)
@@ -458,7 +438,7 @@ class SentinelConnector(BaseConnector):
     def _make_paginated_sentinel_call(self, endpoint, action_result, params, limit):
 
         results_list = []
-        next_link = ''
+        next_link = ""
         while True:
             if next_link:
                 endpoint = next_link
@@ -500,8 +480,8 @@ class SentinelConnector(BaseConnector):
                 return self.set_status(phantom.APP_ERROR)
 
             # Append /result to create redirect_uri
-            redirect_uri = '{0}/result'.format(app_rest_url)
-            app_state['redirect_uri'] = redirect_uri
+            redirect_uri = "{0}/result".format(app_rest_url)
+            app_state["redirect_uri"] = redirect_uri
 
             self.save_progress(consts.MS_OAUTH_URL_MESSAGE)
             self.save_progress(redirect_uri)
@@ -514,14 +494,14 @@ class SentinelConnector(BaseConnector):
                 "state": self._asset_id,
                 "response_type": "code",
                 "scope": consts.MS_SENTINEL_CODE_GENERATION_SCOPE,
-                "redirect_uri": redirect_uri
+                "redirect_uri": redirect_uri,
             }
             authorization_url = consts.MS_SENTINEL_AUTHORIZE_URL.format(tenant_id=self._tenant_id)
-            query_string = '&'.join(f'{key}={value}' for key, value in query_params.items())
+            query_string = "&".join(f"{key}={value}" for key, value in query_params.items())
 
             authorization_url = f"{authorization_url}?{query_string}"
 
-            app_state['admin_consent_url'] = authorization_url
+            app_state["admin_consent_url"] = authorization_url
 
             # The URL that the user should open in a different tab.
             # This is pointing to a REST endpoint that points to the app
@@ -543,11 +523,11 @@ class SentinelConnector(BaseConnector):
 
             auth_status_file_path = self._rsh.get_file_path(self._asset_id, is_state_file=False)
 
-            self.save_progress('Waiting for authorization to complete')
+            self.save_progress("Waiting for authorization to complete")
 
             for i in range(0, 40):
 
-                self.send_progress('{0}'.format('.' * (i % 10)))
+                self.send_progress("{0}".format("." * (i % 10)))
 
                 if auth_status_file_path.is_file():
                     completed = True
@@ -568,7 +548,7 @@ class SentinelConnector(BaseConnector):
                 self.save_progress(consts.MS_SENTINEL_TEST_CONNECTIVITY_FAILED)
                 return action_result.set_status(phantom.APP_ERROR)
 
-            if not self._state.get('code'):
+            if not self._state.get("code"):
                 self.save_progress(consts.MS_AUTHORIZATION_ERROR_MESSAGE)
                 self.save_progress(consts.MS_SENTINEL_TEST_CONNECTIVITY_FAILED)
                 return action_result.set_status(phantom.APP_ERROR)
@@ -612,9 +592,7 @@ class SentinelConnector(BaseConnector):
         filter = param.get("filter")
         endpoint = f"{self._api_url}{consts.MS_SENTINEL_API_INCIDENTS}"
 
-        params = {
-            "$top": min(limit, consts.MS_SENTINEL_DEFAULT_SIZE)
-        }
+        params = {"$top": min(limit, consts.MS_SENTINEL_DEFAULT_SIZE)}
 
         if filter:
             params["$filter"] = filter
@@ -639,7 +617,7 @@ class SentinelConnector(BaseConnector):
         """
         container = {
             "name": incident["properties"]["title"],
-            "description": 'incident ingested using MS Sentinel API',
+            "description": "incident ingested using MS Sentinel API",
             "source_data_identifier": incident["name"],
         }
         ret_val, message, container_id = self.save_container(container)
@@ -652,13 +630,13 @@ class SentinelConnector(BaseConnector):
 
         artifact = [
             {
-                'label': 'incident',
-                'name': 'incident Artifact',
-                'source_data_identifier': incident.get('name'),
-                'cef': incident,
-                'container_id': container_id,
-                'run_automation': True
-             }
+                "label": "incident",
+                "name": "incident Artifact",
+                "source_data_identifier": incident.get("name"),
+                "cef": incident,
+                "container_id": container_id,
+                "run_automation": True,
+            }
         ]
         ret_val, message, _ = self.save_artifacts(artifact)
         if phantom.is_fail(ret_val):
@@ -673,8 +651,7 @@ class SentinelConnector(BaseConnector):
                 return action_result.get_status(), None, None
             last_modified_time = start_time_scheduled_poll
         else:
-            last_modified_time = (datetime.now() - timedelta(days=7)).\
-                strftime(consts.DATE_STR_FORMAT)  # Let's fall back to the last 7 days
+            last_modified_time = (datetime.now() - timedelta(days=7)).strftime(consts.DATE_STR_FORMAT)  # Let's fall back to the last 7 days
         return phantom.APP_SUCCESS, consts.MAX_INCIDENTS_DEFAULT, last_modified_time
 
     def _handle_on_poll(self, param):
@@ -698,8 +675,8 @@ class SentinelConnector(BaseConnector):
         elif self._state.get(consts.STATE_FIRST_RUN, True):
             self._state[consts.STATE_FIRST_RUN] = False
             ret_val, max_incidents = self._validate_integer(
-                action_result, config.get(consts.FIRST_RUN_MAX_INCIDENTS, max_incidents),
-                consts.FIRST_RUN_MAX_INCIDENTS)
+                action_result, config.get(consts.FIRST_RUN_MAX_INCIDENTS, max_incidents), consts.FIRST_RUN_MAX_INCIDENTS
+            )
             if phantom.is_fail(ret_val):
                 return action_result.get_status()
         else:
@@ -710,7 +687,7 @@ class SentinelConnector(BaseConnector):
         params = {
             "$filter": f"(properties/lastModifiedTimeUtc gt {last_modified_time})",
             "$top": consts.MS_SENTINEL_DEFAULT_SIZE,
-            "$orderby": "properties/createdTimeUtc"
+            "$orderby": "properties/createdTimeUtc",
         }
 
         ret_val, incidents = self._make_paginated_sentinel_call(endpoint, action_result, params, max_incidents)
@@ -742,8 +719,7 @@ class SentinelConnector(BaseConnector):
 
         incident_name = param["incident_name"]
 
-        endpoint = f"{self._api_url}{consts.MS_SENTINEL_API_INCIDENTS}/" \
-                   f"{incident_name}{consts.MS_SENTINEL_API_INCIDENTS_ALERTS}"
+        endpoint = f"{self._api_url}{consts.MS_SENTINEL_API_INCIDENTS}/" f"{incident_name}{consts.MS_SENTINEL_API_INCIDENTS_ALERTS}"
 
         ret_val, alerts_response = self._make_sentinel_call(endpoint, action_result, method="post")
 
@@ -764,8 +740,7 @@ class SentinelConnector(BaseConnector):
 
         incident_name = param["incident_name"]
 
-        endpoint = f"{self._api_url}{consts.MS_SENTINEL_API_INCIDENTS}/" \
-                   f"{incident_name}{consts.MS_SENTINEL_API_INCIDENTS_ENTITIES}"
+        endpoint = f"{self._api_url}{consts.MS_SENTINEL_API_INCIDENTS}/" f"{incident_name}{consts.MS_SENTINEL_API_INCIDENTS_ENTITIES}"
 
         ret_val, entities_response = self._make_sentinel_call(endpoint, action_result, method="post")
 
@@ -813,10 +788,9 @@ class SentinelConnector(BaseConnector):
         classification_reason = param.get("classification_reason")
         labels = None
         if param.get("labels"):
-            labels = list(set(filter(None, [label.strip() for label in param.get('labels', "").split(',')])))
+            labels = list(set(filter(None, [label.strip() for label in param.get("labels", "").split(",")])))
             if not labels:
-                return action_result.set_status(phantom.APP_ERROR,
-                                                consts.MS_SENTINEL_VALID_LABEL_PARAM.format(param="labels"))
+                return action_result.set_status(phantom.APP_ERROR, consts.MS_SENTINEL_VALID_LABEL_PARAM.format(param="labels"))
         params = [severity, status, title, description, owner_upn, labels]
 
         # First, we have to retrieve the incident and then update the fields and PUT it back
@@ -834,7 +808,7 @@ class SentinelConnector(BaseConnector):
                 "severity": incident["properties"]["severity"],
                 "status": incident["properties"]["status"],
                 "owner": incident["properties"]["owner"],
-                "labels": incident["properties"]["labels"]
+                "labels": incident["properties"]["labels"],
             }
         }
 
@@ -850,12 +824,7 @@ class SentinelConnector(BaseConnector):
             updated_incident_base["properties"]["owner"] = {}
             updated_incident_base["properties"]["owner"]["userPrincipalName"] = owner_upn
         if labels:
-            [updated_incident_base["properties"]["labels"].append(
-                {
-                    "labelName": val,
-                    "labelType": "User"
-                }
-            ) for val in labels]
+            [updated_incident_base["properties"]["labels"].append({"labelName": val, "labelType": "User"}) for val in labels]
 
         # check if no parameter is provided
         if not any(params):
@@ -869,8 +838,7 @@ class SentinelConnector(BaseConnector):
             if classification_reason:
                 updated_incident_base["properties"]["classificationReason"] = classification_reason
 
-        ret_val, updated_incident = self._make_sentinel_call(endpoint, action_result, method="put",
-                                                             json=updated_incident_base)
+        ret_val, updated_incident = self._make_sentinel_call(endpoint, action_result, method="put", json=updated_incident_base)
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
@@ -890,11 +858,7 @@ class SentinelConnector(BaseConnector):
 
         endpoint = f"{self._api_url}{consts.MS_SENTINEL_API_INCIDENTS}/{incident_name}/comments/{comment_id}"
 
-        payload = {
-            "properties": {
-                "message": message
-            }
-        }
+        payload = {"properties": {"message": message}}
 
         ret_val, response = self._make_sentinel_call(endpoint, action_result, method="put", json=payload)
 
@@ -913,9 +877,7 @@ class SentinelConnector(BaseConnector):
         query = param["query"]
         timespan = param.get("timespan")
 
-        payload = {
-            "query": query
-        }
+        payload = {"query": query}
 
         if timespan:
             payload["timespan"] = timespan
@@ -931,9 +893,7 @@ class SentinelConnector(BaseConnector):
         for table in response["tables"]:
             table_name = table["name"]
             for row in table["rows"]:
-                row_data = {
-                    "SentinelTableName": table_name
-                }
+                row_data = {"SentinelTableName": table_name}
                 for i, col_value in enumerate(row):
                     col_name = table["columns"][i]["name"]
                     row_data[col_name] = col_value
@@ -952,7 +912,7 @@ class SentinelConnector(BaseConnector):
 
         self.debug_print("action_id", self.get_action_identifier())
 
-        if action_id == 'test_asset_connectivity':
+        if action_id == "test_asset_connectivity":
             ret_val = self._handle_test_connectivity(param)
         elif action_id == "list_incidents":
             ret_val = self._handle_list_incidents(param)
@@ -998,15 +958,13 @@ class SentinelConnector(BaseConnector):
         self._login_url = consts.MS_SENTINEL_LOGIN_URL.format(tenant_id=self._tenant_id)
         self._loganalytics_login_url = consts.LOGANALYTICS_LOGIN_URL.format(tenant_id=self._tenant_id)
 
-        self._api_url = consts.MS_SENTINEL_API_URL.format(subscription_id=self._subscription_id,
-                                                          resource_group=self._resource_group_name,
-                                                          workspace_name=self._workspace_name)
+        self._api_url = consts.MS_SENTINEL_API_URL.format(
+            subscription_id=self._subscription_id, resource_group=self._resource_group_name, workspace_name=self._workspace_name
+        )
         self._loganalytics_api_url = consts.LOGANALYTICS_API_URL.format(workspace_id=self._workspace_id)
         self._non_interactive = config.get("non_interactive", False)
-        self._access_token = self._state.get(consts.MS_SENTINEL_TOKEN_STRING, {}).\
-            get(consts.MS_SENTINEL_ACCESS_TOKEN_STRING)
-        self._refresh_token = self._state.get(consts.MS_SENTINEL_TOKEN_STRING, {}).\
-            get(consts.MS_SENTINEL_REFRESH_TOKEN_STRING)
+        self._access_token = self._state.get(consts.MS_SENTINEL_TOKEN_STRING, {}).get(consts.MS_SENTINEL_ACCESS_TOKEN_STRING)
+        self._refresh_token = self._state.get(consts.MS_SENTINEL_TOKEN_STRING, {}).get(consts.MS_SENTINEL_REFRESH_TOKEN_STRING)
         self._loganalytic_token = self._state.get(consts.MS_SENTINEL_LOGANALYTICS_TOKEN_KEY)
 
         return phantom.APP_SUCCESS
@@ -1017,7 +975,7 @@ class SentinelConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _generate_new_access_token(self, action_result):
-        """ This function is used to generate new access token using the code obtained on authorization.
+        """This function is used to generate new access token using the code obtained on authorization.
         :param action_result: object of ActionResult class
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS
         """
@@ -1030,21 +988,25 @@ class SentinelConnector(BaseConnector):
             login_payload["scope"] = consts.MS_SENTINEL_LOGIN_SCOPE
             login_payload["grant_type"] = "client_credentials"
         else:
-            login_payload['redirect_uri'] = self._state.get('redirect_uri')
-            auth_code = self._state.get('code', None)
+            login_payload["redirect_uri"] = self._state.get("redirect_uri")
+            auth_code = self._state.get("code", None)
             if self._state.get(consts.MS_SENTINEL_TOKEN_STRING, {}).get(consts.MS_SENTINEL_REFRESH_TOKEN_STRING, None):
                 login_payload["refresh_token"] = self._refresh_token
-                login_payload["grant_type"] = 'refresh_token'
+                login_payload["grant_type"] = "refresh_token"
             elif auth_code:
-                self._state.pop('code')
+                self._state.pop("code")
                 login_payload["code"] = auth_code
-                login_payload["grant_type"] = 'authorization_code'
+                login_payload["grant_type"] = "authorization_code"
             else:
                 return action_result.set_status(phantom.APP_ERROR, consts.MS_SENTINEL_STATE_FILE_ERROR)
 
-        ret_val, resp_json = self._make_rest_call(self._login_url, action_result=action_result, method="post",
-                                                  headers={"Content-Type": "application/x-www-form-urlencoded"},
-                                                  data=login_payload)
+        ret_val, resp_json = self._make_rest_call(
+            self._login_url,
+            action_result=action_result,
+            method="post",
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            data=login_payload,
+        )
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
@@ -1060,19 +1022,21 @@ class SentinelConnector(BaseConnector):
             "client_id": self._client_id,
             "client_secret": self._client_secret,
             "resource": consts.LOGANALYTICS_LOGIN_RESOURCE,
-            "grant_type": "client_credentials"
+            "grant_type": "client_credentials",
         }
 
-        ret_val, resp_json = self._make_rest_call(self._loganalytics_login_url, action_result=action_result,
-                                                  method="post",
-                                                  headers={"Content-Type": "application/x-www-form-urlencoded"},
-                                                  data=login_payload)
+        ret_val, resp_json = self._make_rest_call(
+            self._loganalytics_login_url,
+            action_result=action_result,
+            method="post",
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            data=login_payload,
+        )
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        self._loganalytic_token = self._state[consts.MS_SENTINEL_LOGANALYTICS_TOKEN_KEY] = \
-            resp_json[consts.MS_SENTINEL_ACCESS_TOKEN_STRING]
+        self._loganalytic_token = self._state[consts.MS_SENTINEL_LOGANALYTICS_TOKEN_KEY] = resp_json[consts.MS_SENTINEL_ACCESS_TOKEN_STRING]
         return phantom.APP_SUCCESS
 
 
@@ -1081,9 +1045,9 @@ def main():
 
     argparser = argparse.ArgumentParser()
 
-    argparser.add_argument('input_test_json', help='Input Test JSON file')
-    argparser.add_argument('-u', '--username', help='username', required=False)
-    argparser.add_argument('-p', '--password', help='password', required=False)
+    argparser.add_argument("input_test_json", help="Input Test JSON file")
+    argparser.add_argument("-u", "--username", help="username", required=False)
+    argparser.add_argument("-p", "--password", help="password", required=False)
 
     args = argparser.parse_args()
     session_id = None
@@ -1095,29 +1059,29 @@ def main():
 
         # User specified a username but not a password, so ask
         import getpass
+
         password = getpass.getpass("Password: ")
 
     if username and password:
         try:
-            login_url = SentinelConnector._get_phantom_base_url() + '/login'
+            login_url = SentinelConnector._get_phantom_base_url() + "/login"
 
             print("Accessing the Login page")
             r = requests.get(login_url, verify=False, timeout=consts.MS_SENTINEL_DEFAULT_TIMEOUT)
-            csrftoken = r.cookies['csrftoken']
+            csrftoken = r.cookies["csrftoken"]
 
             data = dict()
-            data['username'] = username
-            data['password'] = password
-            data['csrfmiddlewaretoken'] = csrftoken
+            data["username"] = username
+            data["password"] = password
+            data["csrfmiddlewaretoken"] = csrftoken
 
             headers = dict()
-            headers['Cookie'] = 'csrftoken=' + csrftoken
-            headers['Referer'] = login_url
+            headers["Cookie"] = "csrftoken=" + csrftoken
+            headers["Referer"] = login_url
 
             print("Logging into Platform to get the session id")
-            r2 = requests.post(login_url, verify=False, data=data, headers=headers,
-                               timeout=consts.MS_SENTINEL_DEFAULT_TIMEOUT)
-            session_id = r2.cookies['sessionid']
+            r2 = requests.post(login_url, verify=False, data=data, headers=headers, timeout=consts.MS_SENTINEL_DEFAULT_TIMEOUT)
+            session_id = r2.cookies["sessionid"]
         except Exception as e:
             print("Unable to get session id from the platform. Error: " + str(e))
             exit(1)
@@ -1131,8 +1095,8 @@ def main():
         connector.print_progress_message = True
 
         if session_id is not None:
-            in_json['user_session_token'] = session_id
-            connector._set_csrf_info(csrftoken, headers['Referer'])
+            in_json["user_session_token"] = session_id
+            connector._set_csrf_info(csrftoken, headers["Referer"])
 
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
@@ -1140,5 +1104,5 @@ def main():
     exit(0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

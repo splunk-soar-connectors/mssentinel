@@ -1,5 +1,5 @@
 [comment]: # " File: README.md"
-[comment]: # "  Copyright (c) 2022 Splunk Inc."
+[comment]: # "  Copyright (c) 2022-2025 Splunk Inc."
 [comment]: # ""
 [comment]: # "Licensed under the Apache License, Version 2.0 (the 'License');"
 [comment]: # "you may not use this file except in compliance with the License."
@@ -53,7 +53,7 @@ Incident Name is the last component of the link to the incident that can be revi
 For example, the Incident Name corresponding to
 
           https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/dx582xwx-4x28-4f8d-9ded-9b0xd2803739/resourceGroups/demomachine_group/providers/Microsoft.OperationalInsights/workspaces/customworkspace/providers/Microsoft.SecurityInsights/Incidents/80289647-8743-4x67-87xx-9409x59xxxxx
-        
+
 
 is simply 80289647-8743-4a67-87db-9409e597b0db
 

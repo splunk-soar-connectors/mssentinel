@@ -1,6 +1,6 @@
 # File: mssentinel_consts.py
 #
-# Copyright (c) 2022-2023 Splunk Inc.
+# Copyright (c) 2022-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -51,10 +51,10 @@ MS_SENTINEL_LOGANALYTICS_TOKEN_KEY = "loganalytics_token"
 FIRST_RUN_MAX_INCIDENTS = "first_run_max_incidents"
 START_TIME_SCHEDULED_POLL = "start_time_scheduled_poll"
 MAX_INCIDENTS_DEFAULT = 100
-DATE_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
+DATE_STR_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 # messages
-MS_REST_URL_NOT_AVAILABLE_MESSAGE = 'Rest URL not available. Error: {error}'
+MS_REST_URL_NOT_AVAILABLE_MESSAGE = "Rest URL not available. Error: {error}"
 MS_SENTINEL_RETRIEVING_ACCESS_TOKEN_MESSAGE = "Retrieving access token"
 MS_SENTINEL_SUCCESS_RETRIEVING_ACCESS_TOKEN = "Successfully retrieved access token"
 MS_SENTINEL_FAILED_RETRIEVING_ACCESS_TOKEN = "Failed to retrieve new access token"
@@ -66,21 +66,24 @@ MS_SENTINEL_FAILED_RETRIEVING_INCIDENT_ENTITIES = "Failed to retrieve incident e
 MS_SENTINEL_FAILED_CREATING_INCIDENT_COMMENT = "Failed to create incident comment"
 MS_SENTINEL_TEST_CONNECTIVITY_PASSED = "Test Connectivity Passed"
 MS_SENTINEL_TEST_CONNECTIVITY_FAILED = "Test Connectivity Failed"
-MS_SENTINEL_BASE_URL_NOT_FOUND_MESSAGE = 'SOAR Base URL not found in System Settings. ' \
-                                'Please specify this value in System Settings.'
+MS_SENTINEL_BASE_URL_NOT_FOUND_MESSAGE = "SOAR Base URL not found in System Settings. " "Please specify this value in System Settings."
 MS_SENTINEL_CONNECTIVITY_PROCESS = "Please connect to the following URL from a different tab to continue the connectivity process"
-MS_SENTINEL_AUTHORIZE_TROUBLESHOOT_MESSAGE = 'If authorization URL fails to communicate with your SOAR instance, check whether you have:  '\
-                                ' 1. Specified the Web Redirect URL of your App -- The Redirect URL should be <POST URL>/result . '\
-                                ' 2. Configured the base URL of your SOAR Instance at Administration -> Company Settings -> Info'
+MS_SENTINEL_AUTHORIZE_TROUBLESHOOT_MESSAGE = (
+    "If authorization URL fails to communicate with your SOAR instance, check whether you have:  "
+    " 1. Specified the Web Redirect URL of your App -- The Redirect URL should be <POST URL>/result . "
+    " 2. Configured the base URL of your SOAR Instance at Administration -> Company Settings -> Info"
+)
 MS_SENTINEL_ERROR_MESSAGE_UNKNOWN = "Unknown error occurred. Please check the asset configuration and|or action parameters."
 MS_OAUTH_URL_MESSAGE = "Using OAuth URL:\n"
 MS_STATE_FILE_ERROR_MESSAGE = "Unable to load state file"
 MS_AUTHORIZATION_ERROR_MESSAGE = "Authorization code not received or not given"
-MS_SENTINEL_STATE_FILE_CORRUPT_ERROR = "Error occurred while loading the state file due to it's unexpected format. " \
+MS_SENTINEL_STATE_FILE_CORRUPT_ERROR = (
+    "Error occurred while loading the state file due to it's unexpected format. "
     "Resetting the state file with the default format. Please run the test connectivity."
+)
 
 MS_SENTINEL_UTC_SINCE_TIME_ERROR = "Please provide time in the span of UTC time since Unix epoch 1970-01-01T00:00:00Z."
-MS_SENTINEL_GREATER_EQUAL_TIME_ERROR = 'Invalid {0}, can not be greater than or equal to current UTC time'
+MS_SENTINEL_GREATER_EQUAL_TIME_ERROR = "Invalid {0}, can not be greater than or equal to current UTC time"
 MS_SENTINEL_CONFIG_TIME_POLL_NOW = "'Time range for POLL NOW' or 'Start Time for Schedule/Manual POLL' asset configuration parameter"
 MS_SENTINEL_INVALID_DATE_FORMAT = "Invalid date string received. Error occurred while checking date format. Error: {}"
 MS_SENTINEL_NO_LAST_MODIFIED_TIME = "Could not extract lastModifiedTimeUtc from latest ingested incident."
@@ -94,7 +97,7 @@ MS_SENTINEL_TOKEN_EXPIRED_MESSAGE = [
     "ExpiredAuthenticationToken",
     "AuthenticationFailed",
     "TokenExpired",
-    "InvalidAuthenticationToken"
+    "InvalidAuthenticationToken",
 ]
 MS_SENTINEL_FAILED_LOGANALYTICS_QUERY = "Failed request to query log analytics workspace"
 MS_SENTINEL_VALID_INT_MESSAGE = "Please provide a valid integer value in the '{param}'"
