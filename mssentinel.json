@@ -10,7 +10,7 @@
     "python_version": "3",
     "product_version_regex": ".*",
     "publisher": "Splunk Community",
-    "license": "Copyright (c) 2022 Splunk Inc.",
+    "license": "Copyright (c) 2022-2025 Splunk Inc.",
     "app_version": "1.0.1",
     "utctime_updated": "2022-04-30T14:52:08.552463Z",
     "package_name": "phantom_mssentinel",
@@ -289,7 +289,10 @@
                 },
                 {
                     "data_path": "action_result.parameter.incident_name",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "mssentinel incident name"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.entities.*.id",
@@ -362,7 +365,10 @@
                 },
                 {
                     "data_path": "action_result.parameter.incident_name",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "mssentinel incident name"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.id",
@@ -839,6 +845,14 @@
                 {
                     "data_path": "summary.total_objects_successful",
                     "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.parameter.ph",
+                    "data_type": "ph"
+                },
+                {
+                    "data_path": "action_result.parameter.ph2",
+                    "data_type": "ph"
                 }
             ],
             "render": {

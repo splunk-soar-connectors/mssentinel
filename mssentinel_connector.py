@@ -1,6 +1,6 @@
 # File: mssentinel_connector.py
 #
-# Copyright (c) 2022 Splunk Inc.
+# Copyright (c) 2022-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
 # -----------------------------------------
 
 # Python 3 Compatibility imports
-from __future__ import print_function, unicode_literals
 
 import json
 from datetime import datetime, timedelta
@@ -51,9 +50,9 @@ def _get_error_message_from_exception(e):
         pass
 
     if not error_code:
-        error_text = "Error Message: {}".format(error_msg)
+        error_text = f"Error Message: {error_msg}"
     else:
-        error_text = "Error Code: {}. Error Message: {}".format(error_code, error_msg)
+        error_text = f"Error Code: {error_code}. Error Message: {error_msg}"
 
     return error_text
 
@@ -68,17 +67,14 @@ def is_positive_int(value):
 
 
 class RetVal(tuple):
-
     def __new__(cls, val1, val2=None):
         return tuple.__new__(RetVal, (val1, val2))
 
 
 class SentinelConnector(BaseConnector):
-
     def __init__(self):
-
         # Call the BaseConnectors init first
-        super(SentinelConnector, self).__init__()
+        super().__init__()
 
         self._state = None
 
@@ -94,11 +90,7 @@ class SentinelConnector(BaseConnector):
         if response.status_code == 200:
             return RetVal(phantom.APP_SUCCESS, {})
 
-        return RetVal(
-            action_result.set_status(
-                phantom.APP_ERROR, "Empty response and no information in the header"
-            ), None
-        )
+        return RetVal(action_result.set_status(phantom.APP_ERROR, "Empty response and no information in the header"), None)
 
     def _check_invalid_since_utc_time(self, action_result, time):
         """Determine that given time is not before 1970-01-01T00:00:00Z.
@@ -136,7 +128,7 @@ class SentinelConnector(BaseConnector):
                 msg = LOG_GREATER_EQUAL_TIME_ERR.format(LOG_CONFIG_TIME_POLL_NOW)
                 return action_result.set_status(phantom.APP_ERROR, msg)
         except Exception as e:
-            message = "Invalid date string received. Error occurred while checking date format. Error: {}".format(str(e))
+            message = f"Invalid date string received. Error occurred while checking date format. Error: {e!s}"
             return action_result.set_status(phantom.APP_ERROR, message)
         return phantom.APP_SUCCESS
 
@@ -147,15 +139,15 @@ class SentinelConnector(BaseConnector):
         try:
             soup = BeautifulSoup(response.text, "html.parser")
             error_text = soup.text
-            split_lines = error_text.split('\n')
+            split_lines = error_text.split("\n")
             split_lines = [x.strip() for x in split_lines if x.strip()]
-            error_text = '\n'.join(split_lines)
+            error_text = "\n".join(split_lines)
         except:
             error_text = "Cannot parse error details"
 
-        message = "Status Code: {0}. Data from server:\n{1}\n".format(status_code, error_text)
+        message = f"Status Code: {status_code}. Data from server:\n{error_text}\n"
 
-        message = message.replace(u'{', '{{').replace(u'}', '}}')
+        message = message.replace("{", "{{").replace("}", "}}")
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _process_json_response(self, r, action_result):
@@ -164,43 +156,35 @@ class SentinelConnector(BaseConnector):
             resp_json = r.json()
         except Exception as e:
             error_txt = _get_error_message_from_exception(e)
-            return RetVal(
-                action_result.set_status(
-                    phantom.APP_ERROR,
-                    "Unable to parse JSON response. Error: {0}".format(str(error_txt))
-                ), None
-            )
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Unable to parse JSON response. Error: {error_txt!s}"), None)
 
         # Please specify the status codes here
         if 200 <= r.status_code < 399:
             return RetVal(phantom.APP_SUCCESS, resp_json)
 
         # You should process the error returned in the json
-        message = "Error from server. Status Code: {0} Data from server: {1}".format(
-            r.status_code,
-            r.text.replace(u'{', '{{').replace(u'}', '}}')
-        )
+        message = "Error from server. Status Code: {} Data from server: {}".format(r.status_code, r.text.replace("{", "{{").replace("}", "}}"))
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _process_response(self, r, action_result):
         # store the r_text in debug data, it will get dumped in the logs if the action fails
-        if hasattr(action_result, 'add_debug_data'):
-            action_result.add_debug_data({'r_status_code': r.status_code})
-            action_result.add_debug_data({'r_text': r.text})
-            action_result.add_debug_data({'r_headers': r.headers})
+        if hasattr(action_result, "add_debug_data"):
+            action_result.add_debug_data({"r_status_code": r.status_code})
+            action_result.add_debug_data({"r_text": r.text})
+            action_result.add_debug_data({"r_headers": r.headers})
 
         # Process each 'Content-Type' of response separately
 
         # Process a json response
-        if 'json' in r.headers.get('Content-Type', ''):
+        if "json" in r.headers.get("Content-Type", ""):
             return self._process_json_response(r, action_result)
 
         # Process an HTML response, Do this no matter what the api talks.
         # There is a high chance of a PROXY in between phantom and the rest of
         # world, in case of errors, PROXY's return HTML, this function parses
         # the error and adds it to the action_result.
-        if 'html' in r.headers.get('Content-Type', ''):
+        if "html" in r.headers.get("Content-Type", ""):
             return self._process_html_response(r, action_result)
 
         # it's not content-type that is to be parsed, handle an empty response
@@ -208,9 +192,8 @@ class SentinelConnector(BaseConnector):
             return self._process_empty_response(r, action_result)
 
         # everything else is actually an error at this point
-        message = "Can't process response from server. Status Code: {0} Data from server: {1}".format(
-            r.status_code,
-            r.text.replace('{', '{{').replace('}', '}}')
+        message = "Can't process response from server. Status Code: {} Data from server: {}".format(
+            r.status_code, r.text.replace("{", "{{").replace("}", "}}")
         )
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
@@ -223,26 +206,15 @@ class SentinelConnector(BaseConnector):
         try:
             request_func = getattr(requests, method)
         except AttributeError:
-            return RetVal(
-                action_result.set_status(phantom.APP_ERROR, "Invalid method: {0}".format(method)),
-                resp_json
-            )
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Invalid method: {method}"), resp_json)
 
         # Create a URL to connect to
         try:
-            r = request_func(
-                endpoint,
-                verify=verify,
-                **kwargs
-            )
+            r = request_func(endpoint, verify=verify, **kwargs)
 
         except Exception as e:
             error_txt = _get_error_message_from_exception(e)
-            return RetVal(
-                action_result.set_status(
-                    phantom.APP_ERROR,
-                    "Error Connecting to server. Details: {0}".format(str(error_txt))
-                ), resp_json)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Error Connecting to server. Details: {error_txt!s}"), resp_json)
 
         return self._process_response(r, action_result)
 
@@ -255,7 +227,7 @@ class SentinelConnector(BaseConnector):
         if not self._state.get(STATE_LOGANALYTICS_TOKEN_KEY):
             status = self._generate_new_loganalytics_access_token(action_result=action_result)
             if phantom.is_fail(status):
-               return action_result.get_status(), None
+                return action_result.get_status(), None
 
         access_token = self._state[STATE_LOGANALYTICS_TOKEN_KEY]
         kwargs["headers"]["Authorization"] = f"Bearer {access_token}"
@@ -275,7 +247,6 @@ class SentinelConnector(BaseConnector):
         return ret_val, resp_json
 
     def _make_sentinel_call(self, endpoint, action_result, method="get", **kwargs):
-
         if "params" not in kwargs:
             kwargs["params"] = {}
 
@@ -310,9 +281,8 @@ class SentinelConnector(BaseConnector):
         return ret_val, resp_json
 
     def _make_paginated_sentinel_call(self, endpoint, action_result, params, limit):
-
         results_list = []
-        next_link = ''
+        next_link = ""
 
         while True:
             if next_link:
@@ -342,7 +312,7 @@ class SentinelConnector(BaseConnector):
 
     def _handle_test_connectivity(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        self.save_progress("In action handler for: {}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         self.save_progress(LOG_RETRIEVING_ACCESS_TOKEN)
         self.save_progress(LOG_CONNECTING_TO.format(to=self._login_url))
@@ -368,7 +338,7 @@ class SentinelConnector(BaseConnector):
 
     def _handle_list_incidents(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        self.save_progress("In action handler for: {}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         limit = param["limit"]
         filter = param.get("filter")
@@ -378,9 +348,7 @@ class SentinelConnector(BaseConnector):
 
         endpoint = f"{self._api_url}{SENTINEL_API_INCIDENTS}"
 
-        params = {
-            "$top": limit
-        }
+        params = {"$top": limit}
 
         if filter:
             params["$filter"] = filter
@@ -412,23 +380,23 @@ class SentinelConnector(BaseConnector):
         count = None
 
         base_url = self.get_phantom_base_url()
-        base_url = base_url if base_url.endswith('/') else base_url + '/'
+        base_url = base_url if base_url.endswith("/") else base_url + "/"
         url = f'{base_url}rest/container?_filter_source_data_identifier="{key}"&sort=start_time&order=desc'
 
         try:
             r = requests.get(url, verify=False)
         except Exception as e:
-            self.debug_print("Error making local rest call: {0}".format(str(e)))
-            self.debug_print('DB QUERY: {}'.format(url))
+            self.debug_print(f"Error making local rest call: {e!s}")
+            self.debug_print(f"DB QUERY: {url}")
             return phantom.APP_ERROR, cid, count
 
         try:
             resp_json = r.json()
         except Exception as e:
-            self.debug_print('Exception caught: {0}'.format(str(e)))
+            self.debug_print(f"Exception caught: {e!s}")
             return phantom.APP_ERROR, cid, count
 
-        container = resp_json.get('data', [])
+        container = resp_json.get("data", [])
         if not container:
             self.debug_print("Not having any existing container")
             return phantom.APP_ERROR, cid, count
@@ -440,14 +408,14 @@ class SentinelConnector(BaseConnector):
                 self.debug_print("Invalid response received while checking for the existing container")
                 return phantom.APP_ERROR, cid, count
         except Exception as e:
-            self.debug_print("Invalid response received while checking for the existing container. Error: {}".format(str(e)))
+            self.debug_print(f"Invalid response received while checking for the existing container. Error: {e!s}")
             return phantom.APP_ERROR, cid, count
 
-        cid = container.get('id')
-        artifact_count = container.get('artifact_count')
+        cid = container.get("id")
+        artifact_count = container.get("artifact_count")
 
-        self.debug_print("Existing Container ID: {}".format(cid))
-        self.debug_print("Existing Container artifacts count: {}".format(artifact_count))
+        self.debug_print(f"Existing Container ID: {cid}")
+        self.debug_print(f"Existing Container artifacts count: {artifact_count}")
 
         try:
             count = int(self._max_artifacts) - int(artifact_count)
@@ -457,7 +425,7 @@ class SentinelConnector(BaseConnector):
                 cid = None
                 count = None
         except Exception as e:
-            self.debug_print("Error occurred while calculating remaining container space. Error: {}".format(str(e)))
+            self.debug_print(f"Error occurred while calculating remaining container space. Error: {e!s}")
             cid = None
             count = None
         return phantom.APP_SUCCESS, cid, count
@@ -482,7 +450,7 @@ class SentinelConnector(BaseConnector):
             return
 
         # Check for existing container only if it's a scheduled/interval poll and not first run
-        if not (self.is_poll_now() or self._state['first_run']):
+        if not (self.is_poll_now() or self._state["first_run"]):
             ret_val, cid, count = self._check_for_existing_container(action_result, key)
             if phantom.is_fail(ret_val):
                 self.debug_print("Failed to check for existing container")
@@ -496,7 +464,7 @@ class SentinelConnector(BaseConnector):
             start = count
 
         # Divide artifacts list into chunks which length equals to max_artifacts configured in the asset
-        artifacts = [results[i:i + self._max_artifacts] for i in range(start, len(results), self._max_artifacts)]
+        artifacts = [results[i : i + self._max_artifacts] for i in range(start, len(results), self._max_artifacts)]
 
         for artifacts_list in artifacts:
             ret_val = self._ingest_artifacts(action_result, artifacts_list, name, key)
@@ -519,7 +487,7 @@ class SentinelConnector(BaseConnector):
         ret_val, message, cid = self._save_ingested(action_result, artifacts, name, key, cid=cid)
 
         if phantom.is_fail(ret_val):
-            self.debug_print("Failed to save ingested artifacts, error msg: {}".format(message))
+            self.debug_print(f"Failed to save ingested artifacts, error msg: {message}")
             return ret_val
 
         return phantom.APP_SUCCESS
@@ -538,32 +506,29 @@ class SentinelConnector(BaseConnector):
         artifacts[-1]["run_automation"] = True
         if cid:
             for artifact in artifacts:
-                artifact['container_id'] = cid
+                artifact["container_id"] = cid
             ret_val, message, _ = self.save_artifacts(artifacts)
-            self.debug_print("save_artifacts returns, value: {}, reason: {}".format(ret_val, message))
+            self.debug_print(f"save_artifacts returns, value: {ret_val}, reason: {message}")
         else:
             container = dict()
-            container.update({
-                "name": name,
-                "description": 'incident ingested using MS Sentinel API',
-                "source_data_identifier": key,
-                "artifacts": artifacts
-            })
+            container.update(
+                {"name": name, "description": "incident ingested using MS Sentinel API", "source_data_identifier": key, "artifacts": artifacts}
+            )
             ret_val, message, cid = self.save_container(container)
-            self.debug_print("save_container (with artifacts) returns, value: {}, reason: {}, id: {}".format(ret_val, message, cid))
+            self.debug_print(f"save_container (with artifacts) returns, value: {ret_val}, reason: {message}, id: {cid}")
         return ret_val, message, cid
 
     def _create_incident_artifacts(self, action_result, incident):
         artifacts = []
 
         incident_artifact = {}
-        incident_artifact['label'] = 'incident'
-        incident_artifact['name'] = 'incident Artifact'
-        incident_artifact['source_data_identifier'] = incident.get('name')
-        incident_artifact['data'] = incident
+        incident_artifact["label"] = "incident"
+        incident_artifact["name"] = "incident Artifact"
+        incident_artifact["source_data_identifier"] = incident.get("name")
+        incident_artifact["data"] = incident
 
         cef = incident
-        incident_artifact['cef'] = cef
+        incident_artifact["cef"] = cef
         # Append to the artifacts list
         artifacts.append(incident_artifact)
 
@@ -572,7 +537,7 @@ class SentinelConnector(BaseConnector):
     def _handle_on_poll(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        self.save_progress("In action handler for: {}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         config = self.get_config()
 
@@ -606,10 +571,7 @@ class SentinelConnector(BaseConnector):
 
         filter = f"(properties/lastModifiedTimeUtc gt {last_modified_time})"
 
-        params = {
-            "$filter": filter,
-            "$top": SENTINEL_API_INCIDENTS_PAGE_SIZE
-        }
+        params = {"$filter": filter, "$top": SENTINEL_API_INCIDENTS_PAGE_SIZE}
 
         ret_val, incidents = self._make_paginated_sentinel_call(endpoint, action_result, params, max_incidents)
         if phantom.is_fail(ret_val):
@@ -624,7 +586,7 @@ class SentinelConnector(BaseConnector):
                 # Create artifacts from the incidents
                 artifacts = self._create_incident_artifacts(action_result, incident)
             except Exception as e:
-                self.debug_print("Error occurred while creating artifacts for incidents. Error: {}".format(str(e)))
+                self.debug_print(f"Error occurred while creating artifacts for incidents. Error: {e!s}")
                 # Make incidents as empty list
                 incidents = list()
 
@@ -632,7 +594,7 @@ class SentinelConnector(BaseConnector):
             try:
                 self._save_artifacts(action_result, artifacts, name=incident["properties"]["title"], key=incident["name"])
             except Exception as e:
-                self.debug_print("Error occurred while saving artifacts for incidents. Error: {}".format(str(e)))
+                self.debug_print(f"Error occurred while saving artifacts for incidents. Error: {e!s}")
 
         summary = action_result.update_summary({})
         summary["total_incidents"] = len(incidents)
@@ -650,7 +612,7 @@ class SentinelConnector(BaseConnector):
 
     def _handle_get_incident_alerts(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        self.save_progress("In action handler for: {}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         incident_name = param["incident_name"]
 
@@ -675,7 +637,7 @@ class SentinelConnector(BaseConnector):
 
     def _handle_get_incident_entities(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        self.save_progress("In action handler for: {}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         incident_name = param["incident_name"]
 
@@ -696,7 +658,7 @@ class SentinelConnector(BaseConnector):
 
     def _handle_get_incident(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        self.save_progress("In action handler for: {}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         incident_name = param["incident_name"]
 
@@ -718,7 +680,7 @@ class SentinelConnector(BaseConnector):
 
     def _handle_update_incident(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        self.save_progress("In action handler for: {}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         incident_name = param["incident_name"]
         severity = param.get("severity")
@@ -743,7 +705,7 @@ class SentinelConnector(BaseConnector):
             "properties": {
                 "title": incident["properties"]["title"],
                 "severity": incident["properties"]["severity"],
-                "status": incident["properties"]["status"]
+                "status": incident["properties"]["status"],
             }
         }
 
@@ -783,7 +745,7 @@ class SentinelConnector(BaseConnector):
 
     def _handle_add_incident_comment(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        self.save_progress("In action handler for: {}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         incident_name = param["incident_name"]
         message = param["message"]
@@ -792,11 +754,7 @@ class SentinelConnector(BaseConnector):
 
         endpoint = f"{self._api_url}{SENTINEL_API_INCIDENTS}/{incident_name}/comments/{comment_id}"
 
-        payload = {
-            "properties": {
-                "message": message
-            }
-        }
+        payload = {"properties": {"message": message}}
 
         ret_val, response = self._make_sentinel_call(endpoint, action_result, method="put", json=payload)
 
@@ -810,17 +768,15 @@ class SentinelConnector(BaseConnector):
 
     def _handle_run_query(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        self.save_progress("In action handler for: {}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         query = param["query"]
         timespan = param.get("timespan")
         max_rows = param["max_rows"]
 
-        payload = {
-            "query": query
-        }
+        payload = {"query": query}
 
-        if (is_positive_int(max_rows)):
+        if is_positive_int(max_rows):
             payload["maxRows"] = max_rows
         else:
             self.save_progress(LOG_FAILED_PARSING_MAX_ROWS)
@@ -839,9 +795,7 @@ class SentinelConnector(BaseConnector):
         for table in response["tables"]:
             table_name = table["name"]
             for row in table["rows"]:
-                row_data = {
-                    "SentinelTableName": table_name
-                }
+                row_data = {"SentinelTableName": table_name}
                 for i, entry in enumerate(row):
                     col_name = table["columns"][i]["name"]
                     col_value = entry
@@ -864,7 +818,7 @@ class SentinelConnector(BaseConnector):
 
         self.debug_print("action_id", self.get_action_identifier())
 
-        if action_id == 'test_asset_connectivity':
+        if action_id == "test_asset_connectivity":
             ret_val = self._handle_test_connectivity(param)
         elif action_id == "list_incidents":
             ret_val = self._handle_list_incidents(param)
@@ -904,9 +858,9 @@ class SentinelConnector(BaseConnector):
         self._login_url = SENTINEL_LOGIN_URL.format(tenant_id=self._tenant_id)
         self._loganalytics_login_url = LOGANALYTICS_LOGIN_URL.format(tenant_id=self._tenant_id)
 
-        self._api_url = SENTINEL_API_URL.format(subscription_id=self._subscription_id,
-                                                resource_group=self._resource_group_name,
-                                                workspace_name=self._workspace_name)
+        self._api_url = SENTINEL_API_URL.format(
+            subscription_id=self._subscription_id, resource_group=self._resource_group_name, workspace_name=self._workspace_name
+        )
         self._loganalytics_api_url = LOGANALYTICS_API_URL.format(workspace_id=self._workspace_id)
 
         return phantom.APP_SUCCESS
@@ -917,7 +871,7 @@ class SentinelConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _generate_new_access_token(self, action_result):
-        """ This function is used to generate new access token using the code obtained on authorization.
+        """This function is used to generate new access token using the code obtained on authorization.
         :param action_result: object of ActionResult class
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS
         """
@@ -926,14 +880,15 @@ class SentinelConnector(BaseConnector):
             "client_id": self._client_id,
             "client_secret": self._client_secret,
             "scope": SENTINEL_LOGIN_SCOPE,
-            "grant_type": "client_credentials"
+            "grant_type": "client_credentials",
         }
 
-        ret_val, resp_json = self._make_rest_call(self._login_url,
+        ret_val, resp_json = self._make_rest_call(
+            self._login_url,
             action_result=action_result,
             method="post",
             headers={"Content-Type": "application/x-www-form-urlencoded"},
-            data=login_payload
+            data=login_payload,
         )
 
         if phantom.is_fail(ret_val):
@@ -950,14 +905,15 @@ class SentinelConnector(BaseConnector):
             "client_id": self._client_id,
             "client_secret": self._client_secret,
             "resource": LOGANALYTICS_LOGIN_RESOURCE,
-            "grant_type": "client_credentials"
+            "grant_type": "client_credentials",
         }
 
-        ret_val, resp_json = self._make_rest_call(self._loganalytics_login_url,
+        ret_val, resp_json = self._make_rest_call(
+            self._loganalytics_login_url,
             action_result=action_result,
             method="post",
             headers={"Content-Type": "application/x-www-form-urlencoded"},
-            data=login_payload
+            data=login_payload,
         )
 
         if phantom.is_fail(ret_val):
@@ -975,9 +931,9 @@ def main():
 
     argparser = argparse.ArgumentParser()
 
-    argparser.add_argument('input_test_json', help='Input Test JSON file')
-    argparser.add_argument('-u', '--username', help='username', required=False)
-    argparser.add_argument('-p', '--password', help='password', required=False)
+    argparser.add_argument("input_test_json", help="Input Test JSON file")
+    argparser.add_argument("-u", "--username", help="username", required=False)
+    argparser.add_argument("-p", "--password", help="password", required=False)
 
     args = argparser.parse_args()
     session_id = None
@@ -986,31 +942,31 @@ def main():
     password = args.password
 
     if username is not None and password is None:
-
         # User specified a username but not a password, so ask
         import getpass
+
         password = getpass.getpass("Password: ")
 
     if username and password:
         try:
-            login_url = SentinelConnector._get_phantom_base_url() + '/login'
+            login_url = SentinelConnector._get_phantom_base_url() + "/login"
 
             print("Accessing the Login page")
             r = requests.get(login_url, verify=False)
-            csrftoken = r.cookies['csrftoken']
+            csrftoken = r.cookies["csrftoken"]
 
             data = dict()
-            data['username'] = username
-            data['password'] = password
-            data['csrfmiddlewaretoken'] = csrftoken
+            data["username"] = username
+            data["password"] = password
+            data["csrfmiddlewaretoken"] = csrftoken
 
             headers = dict()
-            headers['Cookie'] = 'csrftoken=' + csrftoken
-            headers['Referer'] = login_url
+            headers["Cookie"] = "csrftoken=" + csrftoken
+            headers["Referer"] = login_url
 
             print("Logging into Platform to get the session id")
             r2 = requests.post(login_url, verify=False, data=data, headers=headers)
-            session_id = r2.cookies['sessionid']
+            session_id = r2.cookies["sessionid"]
         except Exception as e:
             print("Unable to get session id from the platform. Error: " + str(e))
             exit(1)
@@ -1024,8 +980,8 @@ def main():
         connector.print_progress_message = True
 
         if session_id is not None:
-            in_json['user_session_token'] = session_id
-            connector._set_csrf_info(csrftoken, headers['Referer'])
+            in_json["user_session_token"] = session_id
+            connector._set_csrf_info(csrftoken, headers["Referer"])
 
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
@@ -1033,5 +989,5 @@ def main():
     exit(0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
