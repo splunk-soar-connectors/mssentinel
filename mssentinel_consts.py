@@ -1,6 +1,6 @@
 # File: mssentinel_consts.py
 #
-# Copyright (c) 2022 Splunk Inc.
+# Copyright (c) 2022-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ SENTINEL_APP_CONFIG_START_TIME_SCHEDULED_POLL = "start_time_scheduled_poll"
 SENTINEL_APP_CONFIG_MAX_ARTIFACTS_DEFAULT = 500
 SENTINEL_APP_CONFIG_MAX_INCIDENTS_DEFAULT = 1000
 
-SENTINEL_APP_DT_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
+SENTINEL_APP_DT_STR_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 
 LOG_RETRIEVING_ACCESS_TOKEN = "Retrieving access token"
@@ -63,7 +63,7 @@ LOG_CONNECTING_TO = "Connecting to {to}"
 LOG_FAILED_CREATING_INCIDENT_COMMENT = "Failed to create incident comment"
 
 LOG_UTC_SINCE_TIME_ERROR = "Please provide time in the span of UTC time since Unix epoch 1970-01-01T00:00:00Z."
-LOG_GREATER_EQUAL_TIME_ERR = 'Invalid {0}, can not be greater than or equal to current UTC time'
+LOG_GREATER_EQUAL_TIME_ERR = "Invalid {0}, can not be greater than or equal to current UTC time"
 LOG_CONFIG_TIME_POLL_NOW = "'Time range for POLL NOW' or 'Start Time for Schedule/Manual POLL' asset configuration parameter"
 
 LOG_NO_LAST_MODIFIED_TIME = "Could not extract lastModifiedTimeUtc from latest ingested incident."
