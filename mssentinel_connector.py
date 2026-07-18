@@ -71,6 +71,23 @@ def _quote_path_segment(value):
     return quote(str(value), safe="")
 
 
+def _is_expected_origin(url, expected_url):
+    """Return whether an absolute URL targets the configured API origin."""
+    try:
+        candidate = urlparse(str(url))
+        expected = urlparse(str(expected_url))
+        port = candidate.port
+    except ValueError:
+        return False
+    return (
+        candidate.scheme == "https"
+        and candidate.hostname == expected.hostname
+        and port is None
+        and not candidate.username
+        and not candidate.password
+    )
+
+
 class RetVal(tuple):
     def __new__(cls, val1, val2=None):
         return tuple.__new__(RetVal, (val1, val2))
@@ -288,9 +305,15 @@ class SentinelConnector(BaseConnector):
     def _make_paginated_sentinel_call(self, endpoint, action_result, params, limit):
         results_list = []
         next_link = ""
+        seen_links = set()
 
-        while True:
+        for _ in range(SENTINEL_MAX_PAGINATION_PAGES):
             if next_link:
+                if not _is_expected_origin(next_link, self._api_url):
+                    return action_result.set_status(phantom.APP_ERROR, "Rejected pagination URL outside the configured Sentinel origin"), None
+                if next_link in seen_links:
+                    return action_result.set_status(phantom.APP_ERROR, "Rejected repeated Sentinel pagination URL"), None
+                seen_links.add(next_link)
                 endpoint = next_link
                 params = {}
 
@@ -305,13 +328,15 @@ class SentinelConnector(BaseConnector):
             for entry in res_json[SENTINEL_JSON_VALUE]:
                 results_list.append(entry)
 
-            if int(limit) > len(results_list):
-                results_list = results_list[:limit]
+            if len(results_list) >= int(limit):
+                return phantom.APP_SUCCESS, results_list[: int(limit)]
 
             if not res_json.get(SENTINEL_JSON_NEXT_LINK):
                 break
 
             next_link = res_json[SENTINEL_JSON_NEXT_LINK]
+        else:
+            return action_result.set_status(phantom.APP_ERROR, "Sentinel pagination exceeded its safety limit"), None
 
         return phantom.APP_SUCCESS, results_list
 

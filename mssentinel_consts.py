@@ -26,6 +26,7 @@ SENTINEL_API_URL = "https://management.azure.com/subscriptions/{subscription_id}
 SENTINEL_API_VERSION = "2022-08-01"
 SENTINEL_API_INCIDENTS = "/incidents"
 SENTINEL_API_INCIDENTS_PAGE_SIZE = 50
+SENTINEL_MAX_PAGINATION_PAGES = 1000
 
 LOGANALYTICS_API_URL = "https://api.loganalytics.io/v1/workspaces/{workspace_id}/query"
 
