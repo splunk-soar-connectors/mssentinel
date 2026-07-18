@@ -23,7 +23,7 @@
 
 import json
 from datetime import datetime, timedelta
-from urllib.parse import urlparse
+from urllib.parse import quote, urlparse
 
 # Phantom App imports
 import phantom.app as phantom
@@ -64,6 +64,11 @@ def is_positive_int(value):
     except Exception:
         pass
     return False
+
+
+def _quote_path_segment(value):
+    """Encode a caller-controlled value as one URL path segment."""
+    return quote(str(value), safe="")
 
 
 class RetVal(tuple):
@@ -614,7 +619,7 @@ class SentinelConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        incident_name = param["incident_name"]
+        incident_name = _quote_path_segment(param["incident_name"])
 
         endpoint = f"{self._api_url}{SENTINEL_API_INCIDENTS}/{incident_name}/alerts"
 
@@ -639,7 +644,7 @@ class SentinelConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        incident_name = param["incident_name"]
+        incident_name = _quote_path_segment(param["incident_name"])
 
         endpoint = f"{self._api_url}{SENTINEL_API_INCIDENTS}/{incident_name}/entities"
 
@@ -660,7 +665,7 @@ class SentinelConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        incident_name = param["incident_name"]
+        incident_name = _quote_path_segment(param["incident_name"])
 
         endpoint = f"{self._api_url}{SENTINEL_API_INCIDENTS}/{incident_name}"
 
@@ -682,7 +687,7 @@ class SentinelConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        incident_name = param["incident_name"]
+        incident_name = _quote_path_segment(param["incident_name"])
         severity = param.get("severity")
         status = param.get("status")
         title = param.get("title")
@@ -747,7 +752,7 @@ class SentinelConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        incident_name = param["incident_name"]
+        incident_name = _quote_path_segment(param["incident_name"])
         message = param["message"]
 
         comment_id = int(datetime.utcnow().timestamp())
