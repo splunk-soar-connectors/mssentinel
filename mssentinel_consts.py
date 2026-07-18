@@ -35,6 +35,7 @@ STATE_TOKEN_KEY = "sentinel_token"
 STATE_LAST_TIME = "last_time"
 STATE_FIRST_RUN = "first_run"
 STATE_LOGANALYTICS_TOKEN_KEY = "loganalytics_token"
+STATE_IS_ENCRYPTED = "is_encrypted"
 
 # JSON returned from Sentinel
 SENTINEL_JSON_ACCESS_TOKEN = "access_token"

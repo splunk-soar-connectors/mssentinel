@@ -22,10 +22,12 @@
 # Python 3 Compatibility imports
 
 import json
+from copy import deepcopy
 from datetime import datetime, timedelta
 from urllib.parse import quote, urlparse
 
 # Phantom App imports
+import encryption_helper
 import phantom.app as phantom
 import requests
 from bs4 import BeautifulSoup
@@ -107,6 +109,21 @@ class SentinelConnector(BaseConnector):
         self._workspace_name = None
         self._resource_group_name = None
         self._login_url = None
+
+    def _save_encrypted_state(self):
+        """Persist a copy of state with bearer tokens encrypted at rest."""
+        state_to_save = deepcopy(self._state)
+        try:
+            for key in (STATE_TOKEN_KEY, STATE_LOGANALYTICS_TOKEN_KEY):
+                if state_to_save.get(key):
+                    state_to_save[key] = encryption_helper.encrypt(state_to_save[key], self._asset_id)
+            state_to_save[STATE_IS_ENCRYPTED] = True
+        except Exception as e:
+            self.debug_print(f"Error encrypting connector state: {e!s}")
+            return phantom.APP_ERROR
+
+        self.save_state(state_to_save)
+        return phantom.APP_SUCCESS
 
     def _process_empty_response(self, response, action_result):
         if response.status_code == 200:
@@ -284,6 +301,7 @@ class SentinelConnector(BaseConnector):
             status = self._generate_new_access_token(action_result=action_result)
             if phantom.is_fail(status):
                 return action_result.get_status(), None
+            access_token = self._state[STATE_TOKEN_KEY]
 
         kwargs["headers"]["Authorization"] = f"Bearer {access_token}"
 
@@ -636,7 +654,8 @@ class SentinelConnector(BaseConnector):
                 return action_result.set_status(phantom.APP_ERROR, LOG_NO_LAST_MODIFIED_TIME)
 
             self._state[STATE_LAST_TIME] = incidents[0]["properties"][SENTINEL_JSON_LAST_MODIFIED]
-            self.save_state(self._state)
+            if phantom.is_fail(self._save_encrypted_state()):
+                return action_result.set_status(phantom.APP_ERROR, "Unable to encrypt and save connector state")
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
@@ -873,6 +892,19 @@ class SentinelConnector(BaseConnector):
         # Load the state in initialize, use it to store data
         # that needs to be accessed across actions
         self._state = self.load_state()
+        self._asset_id = self.get_asset_id()
+        if not isinstance(self._state, dict):
+            self._state = {}
+        if self._state.get(STATE_IS_ENCRYPTED):
+            for key in (STATE_TOKEN_KEY, STATE_LOGANALYTICS_TOKEN_KEY):
+                if not self._state.get(key):
+                    continue
+                try:
+                    self._state[key] = encryption_helper.decrypt(self._state[key], self._asset_id)
+                except Exception as e:
+                    self.debug_print(f"Error decrypting {key}; a new token will be requested: {e!s}")
+                    self._state.pop(key, None)
+        self._state.pop(STATE_IS_ENCRYPTED, None)
 
         # get the asset config
         config = self.get_config()
@@ -897,8 +929,7 @@ class SentinelConnector(BaseConnector):
 
     def finalize(self):
         # Save the state, this data is saved across actions and app upgrades
-        self.save_state(self._state)
-        return phantom.APP_SUCCESS
+        return self._save_encrypted_state()
 
     def _generate_new_access_token(self, action_result):
         """This function is used to generate new access token using the code obtained on authorization.
@@ -925,8 +956,8 @@ class SentinelConnector(BaseConnector):
             return action_result.get_status()
 
         self._state[STATE_TOKEN_KEY] = resp_json[SENTINEL_JSON_ACCESS_TOKEN]
-        self.save_state(self._state)
-        self.load_state()
+        if phantom.is_fail(self._save_encrypted_state()):
+            return action_result.set_status(phantom.APP_ERROR, "Unable to encrypt and save the Sentinel access token")
 
         return phantom.APP_SUCCESS
 
@@ -950,8 +981,8 @@ class SentinelConnector(BaseConnector):
             return action_result.get_status()
 
         self._state[STATE_LOGANALYTICS_TOKEN_KEY] = resp_json[SENTINEL_JSON_ACCESS_TOKEN]
-        self.save_state(self._state)
-        self.load_state()
+        if phantom.is_fail(self._save_encrypted_state()):
+            return action_result.set_status(phantom.APP_ERROR, "Unable to encrypt and save the Log Analytics access token")
 
         return phantom.APP_SUCCESS
 
