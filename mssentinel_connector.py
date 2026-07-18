@@ -1,6 +1,6 @@
 # File: mssentinel_connector.py
 #
-# Copyright (c) 2022-2025 Splunk Inc.
+# Copyright (c) 2022-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -327,7 +327,7 @@ class SentinelConnector(BaseConnector):
 
         endpoint = f"{self._api_url}{SENTINEL_API_INCIDENTS}"
 
-        ret_val, resp_json = self._make_sentinel_call(endpoint, action_result, params={"$top": 1})
+        ret_val, _resp_json = self._make_sentinel_call(endpoint, action_result, params={"$top": 1})
 
         if phantom.is_fail(ret_val):
             self.save_progress(LOG_FAILED_RETRIEVING_INCIDENTS)
