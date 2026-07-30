@@ -1,6 +1,6 @@
 # File: mssentinel_consts.py
 #
-# Copyright (c) 2022-2025 Splunk Inc.
+# Copyright (c) 2022-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ SENTINEL_API_URL = "https://management.azure.com/subscriptions/{subscription_id}
 SENTINEL_API_VERSION = "2022-08-01"
 SENTINEL_API_INCIDENTS = "/incidents"
 SENTINEL_API_INCIDENTS_PAGE_SIZE = 50
+SENTINEL_MAX_PAGINATION_PAGES = 1000
 
 LOGANALYTICS_API_URL = "https://api.loganalytics.io/v1/workspaces/{workspace_id}/query"
 
@@ -34,6 +35,7 @@ STATE_TOKEN_KEY = "sentinel_token"
 STATE_LAST_TIME = "last_time"
 STATE_FIRST_RUN = "first_run"
 STATE_LOGANALYTICS_TOKEN_KEY = "loganalytics_token"
+STATE_IS_ENCRYPTED = "is_encrypted"
 
 # JSON returned from Sentinel
 SENTINEL_JSON_ACCESS_TOKEN = "access_token"

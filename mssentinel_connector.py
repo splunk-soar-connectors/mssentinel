@@ -1,6 +1,6 @@
 # File: mssentinel_connector.py
 #
-# Copyright (c) 2022-2025 Splunk Inc.
+# Copyright (c) 2022-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,10 +22,12 @@
 # Python 3 Compatibility imports
 
 import json
+from copy import deepcopy
 from datetime import datetime, timedelta
-from urllib.parse import urlparse
+from urllib.parse import quote, urlparse
 
 # Phantom App imports
+import encryption_helper
 import phantom.app as phantom
 import requests
 from bs4 import BeautifulSoup
@@ -66,6 +68,28 @@ def is_positive_int(value):
     return False
 
 
+def _quote_path_segment(value):
+    """Encode a caller-controlled value as one URL path segment."""
+    return quote(str(value), safe="")
+
+
+def _is_expected_origin(url, expected_url):
+    """Return whether an absolute URL targets the configured API origin."""
+    try:
+        candidate = urlparse(str(url))
+        expected = urlparse(str(expected_url))
+        port = candidate.port
+    except ValueError:
+        return False
+    return (
+        candidate.scheme == "https"
+        and candidate.hostname == expected.hostname
+        and port is None
+        and not candidate.username
+        and not candidate.password
+    )
+
+
 class RetVal(tuple):
     def __new__(cls, val1, val2=None):
         return tuple.__new__(RetVal, (val1, val2))
@@ -85,6 +109,21 @@ class SentinelConnector(BaseConnector):
         self._workspace_name = None
         self._resource_group_name = None
         self._login_url = None
+
+    def _save_encrypted_state(self):
+        """Persist a copy of state with bearer tokens encrypted at rest."""
+        state_to_save = deepcopy(self._state)
+        try:
+            for key in (STATE_TOKEN_KEY, STATE_LOGANALYTICS_TOKEN_KEY):
+                if state_to_save.get(key):
+                    state_to_save[key] = encryption_helper.encrypt(state_to_save[key], self._asset_id)
+            state_to_save[STATE_IS_ENCRYPTED] = True
+        except Exception as e:
+            self.debug_print(f"Error encrypting connector state: {e!s}")
+            return phantom.APP_ERROR
+
+        self.save_state(state_to_save)
+        return phantom.APP_SUCCESS
 
     def _process_empty_response(self, response, action_result):
         if response.status_code == 200:
@@ -262,6 +301,7 @@ class SentinelConnector(BaseConnector):
             status = self._generate_new_access_token(action_result=action_result)
             if phantom.is_fail(status):
                 return action_result.get_status(), None
+            access_token = self._state[STATE_TOKEN_KEY]
 
         kwargs["headers"]["Authorization"] = f"Bearer {access_token}"
 
@@ -283,9 +323,15 @@ class SentinelConnector(BaseConnector):
     def _make_paginated_sentinel_call(self, endpoint, action_result, params, limit):
         results_list = []
         next_link = ""
+        seen_links = set()
 
-        while True:
+        for _ in range(SENTINEL_MAX_PAGINATION_PAGES):
             if next_link:
+                if not _is_expected_origin(next_link, self._api_url):
+                    return action_result.set_status(phantom.APP_ERROR, "Rejected pagination URL outside the configured Sentinel origin"), None
+                if next_link in seen_links:
+                    return action_result.set_status(phantom.APP_ERROR, "Rejected repeated Sentinel pagination URL"), None
+                seen_links.add(next_link)
                 endpoint = next_link
                 params = {}
 
@@ -300,13 +346,15 @@ class SentinelConnector(BaseConnector):
             for entry in res_json[SENTINEL_JSON_VALUE]:
                 results_list.append(entry)
 
-            if int(limit) > len(results_list):
-                results_list = results_list[:limit]
+            if len(results_list) >= int(limit):
+                return phantom.APP_SUCCESS, results_list[: int(limit)]
 
             if not res_json.get(SENTINEL_JSON_NEXT_LINK):
                 break
 
             next_link = res_json[SENTINEL_JSON_NEXT_LINK]
+        else:
+            return action_result.set_status(phantom.APP_ERROR, "Sentinel pagination exceeded its safety limit"), None
 
         return phantom.APP_SUCCESS, results_list
 
@@ -327,7 +375,7 @@ class SentinelConnector(BaseConnector):
 
         endpoint = f"{self._api_url}{SENTINEL_API_INCIDENTS}"
 
-        ret_val, resp_json = self._make_sentinel_call(endpoint, action_result, params={"$top": 1})
+        ret_val, _resp_json = self._make_sentinel_call(endpoint, action_result, params={"$top": 1})
 
         if phantom.is_fail(ret_val):
             self.save_progress(LOG_FAILED_RETRIEVING_INCIDENTS)
@@ -606,7 +654,8 @@ class SentinelConnector(BaseConnector):
                 return action_result.set_status(phantom.APP_ERROR, LOG_NO_LAST_MODIFIED_TIME)
 
             self._state[STATE_LAST_TIME] = incidents[0]["properties"][SENTINEL_JSON_LAST_MODIFIED]
-            self.save_state(self._state)
+            if phantom.is_fail(self._save_encrypted_state()):
+                return action_result.set_status(phantom.APP_ERROR, "Unable to encrypt and save connector state")
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
@@ -614,7 +663,7 @@ class SentinelConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        incident_name = param["incident_name"]
+        incident_name = _quote_path_segment(param["incident_name"])
 
         endpoint = f"{self._api_url}{SENTINEL_API_INCIDENTS}/{incident_name}/alerts"
 
@@ -639,7 +688,7 @@ class SentinelConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        incident_name = param["incident_name"]
+        incident_name = _quote_path_segment(param["incident_name"])
 
         endpoint = f"{self._api_url}{SENTINEL_API_INCIDENTS}/{incident_name}/entities"
 
@@ -660,7 +709,7 @@ class SentinelConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        incident_name = param["incident_name"]
+        incident_name = _quote_path_segment(param["incident_name"])
 
         endpoint = f"{self._api_url}{SENTINEL_API_INCIDENTS}/{incident_name}"
 
@@ -682,7 +731,7 @@ class SentinelConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        incident_name = param["incident_name"]
+        incident_name = _quote_path_segment(param["incident_name"])
         severity = param.get("severity")
         status = param.get("status")
         title = param.get("title")
@@ -747,7 +796,7 @@ class SentinelConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        incident_name = param["incident_name"]
+        incident_name = _quote_path_segment(param["incident_name"])
         message = param["message"]
 
         comment_id = int(datetime.utcnow().timestamp())
@@ -843,6 +892,19 @@ class SentinelConnector(BaseConnector):
         # Load the state in initialize, use it to store data
         # that needs to be accessed across actions
         self._state = self.load_state()
+        self._asset_id = self.get_asset_id()
+        if not isinstance(self._state, dict):
+            self._state = {}
+        if self._state.get(STATE_IS_ENCRYPTED):
+            for key in (STATE_TOKEN_KEY, STATE_LOGANALYTICS_TOKEN_KEY):
+                if not self._state.get(key):
+                    continue
+                try:
+                    self._state[key] = encryption_helper.decrypt(self._state[key], self._asset_id)
+                except Exception as e:
+                    self.debug_print(f"Error decrypting {key}; a new token will be requested: {e!s}")
+                    self._state.pop(key, None)
+        self._state.pop(STATE_IS_ENCRYPTED, None)
 
         # get the asset config
         config = self.get_config()
@@ -867,8 +929,7 @@ class SentinelConnector(BaseConnector):
 
     def finalize(self):
         # Save the state, this data is saved across actions and app upgrades
-        self.save_state(self._state)
-        return phantom.APP_SUCCESS
+        return self._save_encrypted_state()
 
     def _generate_new_access_token(self, action_result):
         """This function is used to generate new access token using the code obtained on authorization.
@@ -895,8 +956,8 @@ class SentinelConnector(BaseConnector):
             return action_result.get_status()
 
         self._state[STATE_TOKEN_KEY] = resp_json[SENTINEL_JSON_ACCESS_TOKEN]
-        self.save_state(self._state)
-        self.load_state()
+        if phantom.is_fail(self._save_encrypted_state()):
+            return action_result.set_status(phantom.APP_ERROR, "Unable to encrypt and save the Sentinel access token")
 
         return phantom.APP_SUCCESS
 
@@ -920,8 +981,8 @@ class SentinelConnector(BaseConnector):
             return action_result.get_status()
 
         self._state[STATE_LOGANALYTICS_TOKEN_KEY] = resp_json[SENTINEL_JSON_ACCESS_TOKEN]
-        self.save_state(self._state)
-        self.load_state()
+        if phantom.is_fail(self._save_encrypted_state()):
+            return action_result.set_status(phantom.APP_ERROR, "Unable to encrypt and save the Log Analytics access token")
 
         return phantom.APP_SUCCESS
 

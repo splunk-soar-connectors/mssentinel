@@ -1,9 +1,9 @@
 # Sentinel
 
-Publisher: Splunk Community \
-Connector Version: 1.0.2 \
-Product Vendor: Microsoft \
-Product Name: Sentinel \
+Publisher: Splunk Community <br>
+Connector Version: 1.0.2 <br>
+Product Vendor: Microsoft <br>
+Product Name: Sentinel <br>
 Minimum Product Version: 5.3.4
 
 This app provides integration with Microsoft Sentinel
@@ -26,21 +26,21 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity \
-[on poll](#action-on-poll) - Callback action for the on_poll ingest functionality \
-[get incident](#action-get-incident) - Gets a given incident \
-[get incident entities](#action-get-incident-entities) - Gets all entities for an incident \
-[get incident alerts](#action-get-incident-alerts) - Gets all alerts for an incident \
-[list incidents](#action-list-incidents) - Gets all incidents \
-[update incident](#action-update-incident) - Updates an existing incident \
-[add incident comment](#action-add-incident-comment) - Creates a new incident comment \
+[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity <br>
+[on poll](#action-on-poll) - Callback action for the on_poll ingest functionality <br>
+[get incident](#action-get-incident) - Gets a given incident <br>
+[get incident entities](#action-get-incident-entities) - Gets all entities for an incident <br>
+[get incident alerts](#action-get-incident-alerts) - Gets all alerts for an incident <br>
+[list incidents](#action-list-incidents) - Gets all incidents <br>
+[update incident](#action-update-incident) - Updates an existing incident <br>
+[add incident comment](#action-add-incident-comment) - Creates a new incident comment <br>
 [run query](#action-run-query) - Queries the Sentinel Log Analytics workspace for data using KQL
 
 ## action: 'test connectivity'
 
 Validate the asset configuration for connectivity
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -55,7 +55,7 @@ No Output
 
 Callback action for the on_poll ingest functionality
 
-Type: **ingest** \
+Type: **ingest** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -73,7 +73,7 @@ No Output
 
 Gets a given incident
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -118,7 +118,7 @@ summary.total_objects_successful | numeric | | |
 
 Gets all entities for an incident
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -146,7 +146,7 @@ summary.total_objects_successful | numeric | | |
 
 Gets all alerts for an incident
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -185,7 +185,7 @@ summary.total_objects_successful | numeric | | |
 
 Gets all incidents
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -231,7 +231,7 @@ summary.total_objects_successful | numeric | | |
 
 Updates an existing incident
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -294,7 +294,7 @@ action_result.parameter.ph2 | ph | | |
 
 Creates a new incident comment
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -330,7 +330,7 @@ summary.total_objects_successful | numeric | | |
 
 Queries the Sentinel Log Analytics workspace for data using KQL
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -361,7 +361,7 @@ ______________________________________________________________________
 
 Auto-generated Splunk SOAR Connector documentation.
 
-Copyright 2025 Splunk Inc.
+Copyright 2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
