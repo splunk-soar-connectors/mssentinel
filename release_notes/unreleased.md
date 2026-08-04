@@ -1,3 +1,1 @@
 **Unreleased**
-
-* Reject exact-dot incident identifiers before constructing Microsoft Sentinel request paths.

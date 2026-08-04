@@ -1,7 +1,7 @@
 # Sentinel
 
 Publisher: Splunk Community <br>
-Connector Version: 1.0.3 <br>
+Connector Version: 1.0.4 <br>
 Product Vendor: Microsoft <br>
 Product Name: Sentinel <br>
 Minimum Product Version: 5.3.4
