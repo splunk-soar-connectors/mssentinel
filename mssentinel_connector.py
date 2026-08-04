@@ -70,7 +70,7 @@ def is_positive_int(value):
 
 def _quote_path_segment(value):
     """Encode a caller-controlled value as one URL path segment."""
-    return quote(str(value), safe="")
+    return quote(str(value), safe="").replace(".", "%2E")
 
 
 def _is_expected_origin(url, expected_url):
@@ -861,6 +861,10 @@ class SentinelConnector(BaseConnector):
 
     def handle_action(self, param):
         ret_val = phantom.APP_SUCCESS
+
+        if "incident_name" in param and str(param["incident_name"]).strip() in {".", ".."}:
+            action_result = self.add_action_result(ActionResult(dict(param)))
+            return action_result.set_status(phantom.APP_ERROR, "Parameter 'incident_name' must identify one incident")
 
         # Get the action that we are supposed to execute for this App Run
         action_id = self.get_action_identifier()
