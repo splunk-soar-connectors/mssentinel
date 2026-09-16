@@ -23,7 +23,7 @@
 
 import json
 from copy import deepcopy
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from urllib.parse import quote, urlparse
 
 # Phantom App imports
@@ -157,7 +157,7 @@ class SentinelConnector(BaseConnector):
             # Check for the time is in valid format or not
             time = datetime.strptime(date, SENTINEL_APP_DT_STR_FORMAT)
             # Taking current UTC time as end time
-            end_time = datetime.utcnow()
+            end_time = datetime.now(timezone.utc).replace(tzinfo=None)
             # Check for given time is not before 1970-01-01T00:00:00Z
             ret_val = self._check_invalid_since_utc_time(action_result, time)
             if phantom.is_fail(ret_val):
@@ -799,7 +799,7 @@ class SentinelConnector(BaseConnector):
         incident_name = _quote_path_segment(param["incident_name"])
         message = param["message"]
 
-        comment_id = int(datetime.utcnow().timestamp())
+        comment_id = int(datetime.now(timezone.utc).timestamp())
 
         endpoint = f"{self._api_url}{SENTINEL_API_INCIDENTS}/{incident_name}/comments/{comment_id}"
 
